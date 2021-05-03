@@ -40,7 +40,6 @@
                 <h3>{label} <small>{table}</small></h3>
             </div>
 
-            <f:widget.paginate objects="{records}" as="recordsPaginated" configuration="{addQueryStringMethod: 'GET', itemsPerPage: filter.maxentries, insertAbove: 1, maximumNumberOfLinks: 10}">
 
                 <div id="slug-list-wrap">
 
@@ -58,7 +57,7 @@
                                 </div>
                             </th>
                         </tr>
-                        <f:for each="{recordsPaginated}" as="record">
+                        <f:for each="{records}" as="record">
                             <tr>
                                 <td>
                                     <f:if condition="{record.icon}">
@@ -99,7 +98,6 @@
 
                 </div>
 
-            </f:widget.paginate>
 
             <f:render partial="SlugNotes"/>
 
