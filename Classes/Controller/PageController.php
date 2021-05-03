@@ -41,7 +41,7 @@ class PageController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
     }
 
     /**
-     * Generate an Ajax List // EXPERIMENTAL!
+     * Generate an Ajax List
      */
     protected function ajaxListAction()
     {
@@ -100,10 +100,12 @@ class PageController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         // Assign variables to the view
         $this->view->assignMultiple([
             'backendConfiguration' => $this->backendConfiguration,
+            'beLanguage' => $GLOBALS['BE_USER']->user['lang'],
             'extEmconf' => $this->helper->getEmConfiguration('slug'),
             'filterOptions' => $filterOptions,
             'sites' => (array) $this->sites,
-            'slugpro' => $slugpro
+            'slugpro' => $slugpro,
+            'additionalTables' => $this->settings['additionalTables'],
         ]);
     }
 
