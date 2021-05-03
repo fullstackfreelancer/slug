@@ -10,34 +10,24 @@
             </f:if>
         </div>
         <div class="col-sm-8 col-md-9">
-
             <div class="btn-group pull-right">
-                <f:link.action action="ajaxList" controller="Page" class="btn btn-primary text-light">
+                <f:link.action action="ajaxList" controller="Page" class="btn btn-dark text-light">
                     <i class="fa fa-file-o"></i> {f:translate(key:'button.pages', extensionName: slug)}
                 </f:link.action>
                 <f:if condition="{backendConfiguration.treeEnabled}">
-                    <f:link.action action="tree" controller="Page" class="btn btn-primary text-light">
+                    <f:link.action action="tree" controller="Page" class="btn btn-dark text-light">
                         <i class="fa fa-sitemap"></i> {f:translate(key:'button.tree', extensionName: slug)}
                     </f:link.action>
                 </f:if>
                 <f:if condition="{backendConfiguration.recordEnabled}">
                     <f:for each="{additionalTables}" as="table" key="label">
-                        <f:link.action action="additionalTable" controller="Extension" class="btn btn-primary" arguments="{table:label}">
-                            <f:if condition="{table.icon}">
-                                <f:then>
-                                    <f:image src="{table.icon}" height="14"/>
-                                    {table.label}
-                                </f:then>
-                                <f:else>
-                                    <i class="fa fa-file-o"></i>
-                                    {table.label}
-                                </f:else>
-                            </f:if>
+                        <f:link.action action="additionalTable" controller="Extension" class="btn btn-dark text-light" arguments="{table:label}">
+                        <i class="fa fa-file-o"></i>
+                        {table.label}
                         </f:link.action>
                     </f:for>
                 </f:if>
             </div>
-
         </div>
     </div>
 </div>
