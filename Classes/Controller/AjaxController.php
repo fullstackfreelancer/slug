@@ -28,6 +28,7 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
     public function ajaxList(\Psr\Http\Message\ServerRequestInterface $request)
     {
 
+        $helper = GeneralUtility::makeInstance(HelperUtility::class);
         $output = [];
         $queryParams = $request->getQueryParams();
 
@@ -48,56 +49,11 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         $result = $query->execute();
 
         while ($row = $result->fetch()) {
-            $row['sitePrefix'] = $this->getSitePrefix($row);
+            $row['sitePrefix'] = $helper->getSitePrefix($row);
+            $row['site'] = $helper->getSiteByPageUid($row['uid']);
             $output[] = $row;
         }
         return new JsonResponse($output);
-    }
-
-    // Finds and returns the base URL of the website
-    private function getSitePrefix($pageData){
-
-        $output = '';
-        $sitefinder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(SiteFinder::class);
-
-        try {
-            $site = $sitefinder->getSiteByPageId($pageData['uid']);
-            $siteConf = $site->getConfiguration();
-
-            $output = $siteConf['base'];
-
-            // Remove slash from base URL if neccessary
-            if(substr($siteConf['base'], -1) === "/"){
-                $output = substr($siteConf['base'], 0, -1);
-            }
-            else{
-                $output = $siteConf['base'];
-            }
-
-            if($row['isocode']){
-                $output = $output.'/'.$pageData['isocode'];
-            }
-        }
-        catch (SiteNotFoundException $e) {
-           $output = '[no site]';
-        }
-
-        return $output;
-    }
-
-    /**
-     * function getTotalRecords
-     *
-     * @return void
-     */
-    private function getTotalRecords($table){
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
-        $count = $queryBuilder
-           ->count('uid')
-           ->from($table)
-           ->execute()
-           ->fetchColumn(0);
-        return $count;
     }
 
 
