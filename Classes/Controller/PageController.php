@@ -79,7 +79,7 @@ class PageController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             ['value' => '300', 'label' => '300'],
             ['value' => '400', 'label' => '400'],
             ['value' => '500', 'label' => '500'],
-            ['value' => '1000', 'label' => '1000 (be careful!)'],
+            ['value' => '1000', 'label' => '1000'],
             ['value' => '1500', 'label' => '1500'],
             ['value' => '2000', 'label' => '2000'],
             ['value' => '3000', 'label' => '3000'],
@@ -89,9 +89,7 @@ class PageController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 
         // Check if slugpro is loaded
         if(ExtensionManagementUtility::isLoaded('slugpro')){
-            $slugpro = [
-                'version' => '1.0.0'
-            ];
+            $slugpro = $this->helper->getEmConfiguration('slugpro');
         }
         else{
             $slugpro = FALSE;
@@ -104,8 +102,10 @@ class PageController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             'extEmconf' => $this->helper->getEmConfiguration('slug'),
             'filterOptions' => $filterOptions,
             'sites' => (array) $this->sites,
+            'languages' => $this->helper->getLanguages(),
             'slugpro' => $slugpro,
             'additionalTables' => $this->settings['additionalTables'],
+            'totalPages' => $this->pageRepository->findTotalPages()
         ]);
     }
 
