@@ -38,43 +38,43 @@
             <trans-unit id="button.save.title">
 				<source>Save slug</source>
 			</trans-unit>
-                        <trans-unit id="button.refresh.label">
+            <trans-unit id="button.refresh.label">
 				<source>Reload</source>
 			</trans-unit>
-                        <trans-unit id="button.refresh.title">
+            <trans-unit id="button.refresh.title">
 				<source>Reloads the whole list module!</source>
 			</trans-unit>
-                        <trans-unit id="button.saveall.label">
+            <trans-unit id="button.saveall.label">
 				<source>Save all</source>
 			</trans-unit>
-                        <trans-unit id="button.saveall.title">
+        	<trans-unit id="button.saveall.title">
 				<source>Saves all slugs. Be careful what you do and better check twice!</source>
 			</trans-unit>
-                        <trans-unit id="button.generate.label">
+            <trans-unit id="button.generate.label">
 				<source>Generate slug</source>
 			</trans-unit>
-                        <trans-unit id="button.generate.title">
+            <trans-unit id="button.generate.title">
 				<source>Generate slug (without saving!)</source>
 			</trans-unit>
-                        <trans-unit id="button.generateall.label">
+            <trans-unit id="button.generateall.label">
 				<source>Generate all</source>
 			</trans-unit>
-                        <trans-unit id="button.generateall.title">
+            <trans-unit id="button.generateall.title">
 				<source>Generate all</source>
 			</trans-unit>
-                        <trans-unit id="button.info.title">
+            <trans-unit id="button.info.title">
 				<source>Display additional information</source>
 			</trans-unit>
-                        <trans-unit id="button.filter">
+            <trans-unit id="button.filter">
 				<source>Filter</source>
 			</trans-unit>
-                        <trans-unit id="button.pages">
+            <trans-unit id="button.pages">
 				<source>Pages</source>
 			</trans-unit>
-                        <trans-unit id="button.news">
+            <trans-unit id="button.news">
 				<source>News</source>
 			</trans-unit>
-                        <trans-unit id="button.tree">
+            <trans-unit id="button.tree">
 				<source>Tree</source>
 			</trans-unit>
 
@@ -82,10 +82,10 @@
             <trans-unit id="siteselect.options.others">
 				<source>Other pages on the root level (This function comes with the next version!!)</source>
 			</trans-unit>
-                        <trans-unit id="siteselect.labels.site">
+            <trans-unit id="siteselect.labels.site">
 				<source>Site:</source>
 			</trans-unit>
-                        <trans-unit id="siteselect.labels.language">
+            <trans-unit id="siteselect.labels.language">
 				<source>Language:</source>
 			</trans-unit>
 
@@ -105,16 +105,16 @@
             <trans-unit id="notes.info.nopagesfound">
 				<source>Ooops! No pages found...</source>
 			</trans-unit>
-                        <trans-unit id="notes.confirm.slashonly">
+            <trans-unit id="notes.confirm.slashonly">
 				<source>Are you sure you want to save only a slash at this point? What about your root page?</source>
 			</trans-unit>
-                        <trans-unit id="notes.error.noslug">
+            <trans-unit id="notes.error.noslug">
 				<source>Please enter a slug</source>
 			</trans-unit>
-                        <trans-unit id="notes.error.ajax">
+            <trans-unit id="notes.error.ajax">
 				<source>Something went wrong with jQuery and Ajax, please see script output: </source>
 			</trans-unit>
-                        <trans-unit id="notes.generator.after_generating">
+            <trans-unit id="notes.generator.after_generating">
 				<source>The slug has been generated, but not saved yet! Please don't forget to click on the save button if you want so save this version of the slug! You can also set 'autoSave' to enable automatic saving of the slug, after generating.</source>
 			</trans-unit>
 
@@ -141,31 +141,31 @@
             <trans-unit id="filter.form.select.option.creation_date">
 				<source>Creation Date</source>
 			</trans-unit>
-                        <trans-unit id="filter.form.select.option.tstamp">
+            <trans-unit id="filter.form.select.option.tstamp">
 				<source>Last Changed</source>
 			</trans-unit>
-                        <trans-unit id="filter.form.select.option.title">
+            <trans-unit id="filter.form.select.option.title">
 				<source>Title</source>
 			</trans-unit>
-                        <trans-unit id="filter.form.select.option.slug">
+            <trans-unit id="filter.form.select.option.slug">
 				<source>Slug</source>
 			</trans-unit>
-                        <trans-unit id="filter.form.select.option.path_segment">
+            <trans-unit id="filter.form.select.option.path_segment">
 				<source>Path Segment</source>
 			</trans-unit>
-                        <trans-unit id="filter.form.select.option.sys_language_uid">
+            <trans-unit id="filter.form.select.option.sys_language_uid">
 				<source>Language</source>
 			</trans-unit>
-                        <trans-unit id="filter.form.select.option.is_siteroot">
+            <trans-unit id="filter.form.select.option.is_siteroot">
 				<source>Site Root</source>
 			</trans-unit>
-                        <trans-unit id="filter.form.select.option.doktype">
+            <trans-unit id="filter.form.select.option.doktype">
 				<source>Doktype</source>
 			</trans-unit>
-                        <trans-unit id="filter.form.select.option.descending">
+            <trans-unit id="filter.form.select.option.descending">
 				<source>Descending</source>
 			</trans-unit>
-                        <trans-unit id="filter.form.select.option.ascending">
+            <trans-unit id="filter.form.select.option.ascending">
 				<source>Ascending</source>
 			</trans-unit>
 
