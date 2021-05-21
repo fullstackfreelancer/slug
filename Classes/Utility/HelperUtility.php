@@ -2,9 +2,11 @@
 namespace SIMONKOEHLER\Slug\Utility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use TYPO3\CMS\Core\DataHandling\Model\RecordState;
 use TYPO3\CMS\Core\DataHandling\Model\RecordStateFactory;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /*
  * This file was created by Simon Köhler
@@ -22,7 +24,7 @@ class HelperUtility {
 
         if(file_exists($filePath)){
             include $filePath;
-            return $EM_CONF[$_EXTKEY];
+            return $EM_CONF[$extKey];
         }
         else{
             return false;
@@ -30,26 +32,69 @@ class HelperUtility {
 
     }
 
+    // Finds and returns the base URL of the website
+    public function getSitePrefix($pageData){
+
+        $output = '';
+        $sitefinder = GeneralUtility::makeInstance(SiteFinder::class);
+
+        try {
+            $site = $sitefinder->getSiteByPageId($pageData['uid']);
+            $siteConf = $site->getConfiguration();
+
+            $output = $siteConf['base'];
+
+            // Remove slash from base URL if neccessary
+            if(substr($siteConf['base'], -1) === "/"){
+                $output = substr($siteConf['base'], 0, -1);
+            }
+            else{
+                $output = $siteConf['base'];
+            }
+
+            if($row['isocode']){
+                $output = $output.'/'.$pageData['isocode'];
+            }
+        }
+        catch (SiteNotFoundException $e) {
+           $output = '[no site]';
+        }
+
+        return $output;
+    }
+
+    // Finds and returns the base URL of the website
+    public function getSiteByPageUid($pageUid){
+        $sitefinder = GeneralUtility::makeInstance(SiteFinder::class);
+        try {
+            $site = $sitefinder->getSiteByPageId($pageUid);
+            $output = $site->getConfiguration();
+        }
+        catch (SiteNotFoundException $e) {
+           $output = '[no site]';
+        }
+        return $output;
+    }
 
     // Gets the correct flag icon for any given language uid
     public function getFlagIconByLanguageUid($sys_language_uid) {
         foreach ($this->getLanguages() as $value) {
             if($value['uid'] === $sys_language_uid){
-                $output = $value['flag'];
+                $path = '/typo3/sysext/core/Resources/Public/Icons/Flags/'.strtoupper($value['flag']).'.png';
                 break;
             }
             else{
-                $output = $value['flag'];
+                $path = 'typo3conf/ext/slug/Resources/Public/Icons/Flags/default.png';
                 break;
             }
         }
-        return $output;
+        return '<img src="'.$path.'">';
     }
 
 
     // Get all languages
     public function getLanguages(){
-        $queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)->getQueryBuilderForTable('sys_language');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_language');
         $statement = $queryBuilder
             ->select('*')
             ->from('sys_language')
@@ -78,7 +123,7 @@ class HelperUtility {
 
 
     public function getPageTranslationsByUid($uid){
-        $queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)->getQueryBuilderForTable('pages');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
         $statement = $queryBuilder
             ->select('*')
             ->from('pages')
@@ -100,7 +145,7 @@ class HelperUtility {
 
 
     public function getRecordForSlugBuilding($uid,$table){
-        $queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)->getQueryBuilderForTable($table);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
         $statement = $queryBuilder
             ->select('*')
             ->from($table)
@@ -148,6 +193,21 @@ class HelperUtility {
 
         return $uniqueSlug;
 
+    }
+
+    /**
+     * function getTotalRecords
+     *
+     * @return void
+     */
+    public function getTotalRecords($table){
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
+        $count = $queryBuilder
+           ->count('uid')
+           ->from($table)
+           ->execute()
+           ->fetchColumn(0);
+        return $count;
     }
 
 }
