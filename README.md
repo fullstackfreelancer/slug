@@ -1,4 +1,4 @@
-# ![](https://github.com/koehlersimon/slug/blob/master/ext_icon.gif?raw=true) slug - TYPO3 Extension
+# ![](https://github.com/koehlersimon/slug/blob/master/ext_icon.svg?raw=true) slug - TYPO3 Extension
 
 Official Repository of the 'slug' Backend Module for TYPO3 9.5, 10 and soon 11.1.0
 
