@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    console.log('FUCK NO!')
+
     const slugHelper = new SlugHelper();
 
     let filter_key = document.getElementById('filter_key');
