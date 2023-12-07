@@ -4,12 +4,12 @@ Official Repository of the 'slug' Backend Module for TYPO3 9.5, 10 and soon 11.1
 
 The Slug backend module is designed to help manage large amounts of slugs for pages and extension records. Currently, it provides a simple list for pages and custom records, which can be filtered with different parameters. Slugs can be edited and saved quickly and efficiently. The modules regenerate or save **all slugs of the current list view** with just one click. I have tested the functionality with 500 empty news records so far, without any problem.
 
-## VERSION 4.0.0 COMING SOON
+## VERSION 5.0.0 COMING SOON
 
 If you like the slug extension, please consider to donate and help speed up the development.
-Your ideas to improve and extend the slug module are more than welcome: [send a message](https//simon-koehler.com/en/contact)
+Your ideas to improve and extend the slug module are more than welcome: [send a message](https//simonkoehler.com/contact)
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/typo3freelancer/5)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/fullstackfreelancer/25)
 
 ## INTRODUCTION
 
@@ -31,7 +31,7 @@ Please use the latest version from the official TYPO3 repository (https://extens
 ## CHANGELOG
 
 See the changelog for more details:
-https://github.com/koehlersimon/slug/blob/master/CHANGELOG.md
+https://github.com/fullstackfreelancer/slug/blob/master/CHANGELOG.md
 
 ## USAGE
 
@@ -88,12 +88,8 @@ The error "Argument 2 passed to TYPO3\CMS\Core\Imaging\IconFactory::getIconForRe
 
 ## Want to report an issue?
 
-https://github.com/koehlersimon/slug/issues
+https://github.com/fullstackfreelancer/slug/issues
 
 ## All other requests
 
-**Contact:** https://simon-koehler.com/en/contact
-
-## Do you want to learn TYPO3? Here's what you need:
-Video Training TYPO3 9 LTS (German language)
-https://www.digistore24.com/redir/246076/GOCHILLA/
+**Contact:** https://simonkoehler.com/contact
