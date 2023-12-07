@@ -7,10 +7,6 @@ use SIMONKOEHLER\Slug\Controller;
  */
 
 return [
-    'ajaxList' => [
-        'path' => '/slug/ajaxList',
-        'target' => Controller\AjaxController::class . '::ajaxList'
-    ],
     'savePageSlug' => [
         'path' => '/slug/savePageSlug',
         'target' => Controller\AjaxController::class . '::savePageSlug'

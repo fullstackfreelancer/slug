@@ -6,8 +6,12 @@ $gray: #999;
     border-radius: 0 !important;
 }
 
-#typo3-inner-docbody{
+.module-body{
     padding: 0;
+}
+
+#typo3-inner-docbody{
+    padding: 0px;
 }
 
 div#typo3-docbody{

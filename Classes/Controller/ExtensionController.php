@@ -7,7 +7,7 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 
 /*
  * This file was created by Simon Köhler
- * https://simon-koehler.com
+ * https://simonkoehler.com
  */
 
 class ExtensionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {

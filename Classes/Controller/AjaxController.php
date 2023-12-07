@@ -1,5 +1,6 @@
 <?php
 namespace SIMONKOEHLER\Slug\Controller;
+use Psr\Http\Message\ResponseInterface;
 use SIMONKOEHLER\Slug\Utility\HelperUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -15,17 +16,15 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /*
  * This file was created by Simon Köhler
- * https://simon-koehler.com
+ * https://simonkoehler.com
  */
 
 class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 
     /**
      * function ajaxList
-     *
-     * @return void
      */
-    public function ajaxList(\Psr\Http\Message\ServerRequestInterface $request)
+    public function ajaxList(): ResponseInterface
     {
 
         $helper = GeneralUtility::makeInstance(HelperUtility::class);
@@ -34,7 +33,7 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 
         $currentPage = $queryParams['page'];
         $entriesPerPage = $queryParams['maxentries'];
-        $totalRecords = $this->getTotalRecords($queryParams['table']);
+        $totalRecords = $helper->getTotalRecords($queryParams['table']);
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($queryParams['table']);
         $queryBuilder->getRestrictions()->removeAll();
@@ -53,7 +52,7 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             $row['site'] = $helper->getSiteByPageUid($row['uid']);
             $output[] = $row;
         }
-        return new JsonResponse($output);
+        return $this->htmlResponse();
     }
 
 
@@ -249,7 +248,6 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         $root = BackendUtility::getRecord('pages',$queryParams['uid']);
         $languages = $this->helper->getLanguages();
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $extensionUtility= GeneralUtility::makeInstance(ExtensionManagementUtility::class);
         // Check if slugpro is loaded
         if($extensionUtility::isLoaded('slugpro')){
@@ -261,7 +259,7 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             $slugpro = FALSE;
         }
 
-        $view = $objectManager->get(StandaloneView::class);
+        $view = GeneralUtility::makeInstance(StandaloneView::class);
         $view->setLayoutRootPaths(array(
             GeneralUtility::getFileAbsFileName('EXT:slug/Resources/Private/Layouts'),
             GeneralUtility::getFileAbsFileName('EXT:slugpro/Resources/Private/Layouts')
@@ -280,6 +278,14 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         $view->assign('title',$root['seo_title'] ?: $root['title']);
         $view->assign('description',$root['description'] ?: 'Best practice is to keep meta description length between 120-150 characters. This ensures your entire description will appear on both desktop and mobile.');
         $view->assign('slugpro',$slugpro);
+
+        $translation = [
+            'pro' => [
+                'feature_note' => $this->helper->getLangKey('pro.feature_note')
+            ]
+        ];
+        $view->assign('translate',$translation);
+
         $viewRendered = $view->render();
 
         return new HtmlResponse($viewRendered);

@@ -3,7 +3,7 @@ namespace SIMONKOEHLER\Slug\Domain\Model;
 
 /*
  * This file was created by Simon Köhler
- * https://simon-koehler.com
+ * https://simonkoehler.com
  */
 
 class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
@@ -65,7 +65,7 @@ class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
      *
      * @return integer $uid
      */
-    public function getUid()
+    public function getUid(): ?int
     {
         return $this->uid;
     }

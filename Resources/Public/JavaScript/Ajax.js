@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-
+    console.log('FUCK NO!')
     const slugHelper = new SlugHelper();
 
     let filter_key = document.getElementById('filter_key');
@@ -56,14 +56,14 @@ document.addEventListener("DOMContentLoaded", function() {
             if(req.readyState === 4) {
                 if(req.status == 200) {
                     let records = JSON.parse(req.responseText);
+                    document.querySelector('.record-count').innerHTML = records.length;
                     for (var i = 0; i < records.length; i++) {
                         let title = records[i][titleField];
                         let slug = records[i][slugField];
-                        let recordUid = records[i]['uid'];
                         let sitePrefix = records[i]['sitePrefix'];
                         let fullUrl = sitePrefix + slug;
                         let disabledAttribute = records[i]['tx_slug_locked'] ? 'disabled' : '';
-                        output += '<div id="record-'+recordUid+'" data-siteprefix="'+sitePrefix+'" data-record="'+recordUid+'" class="slug-record row mb-2 border-bottom">';
+                        output += '<div id="record-'+records[i]['uid']+'" data-siteprefix="'+sitePrefix+'" data-record="'+records[i]['uid']+'" class="slug-record row mb-2 border-bottom">';
                         output += '<div class="col py-1">';
                             output += '<div>';
                             output += '<h5 class="slug-title"><i class="fa fa-'+slugHelper.getPageIconByType(records[i]['doktype'],records[i]['is_siteroot'])+' fa-fw" title="id='+records[i]['uid']+'"></i> '+title+'</h5>';
@@ -71,11 +71,11 @@ document.addEventListener("DOMContentLoaded", function() {
                             output += '</div>';
                         output += '</div>';
                         output += '<div class="col py-1">';
-                            output += '<div class="input-group"><span class="input-group-addon"></span><input type="text" class="form-control slug-input" value="'+slug+'" '+disabledAttribute+'/></div>';
+                            output += '<div class="input-group"><span class="input-group-addon">'+records[i]['sys_language_uid']+'</span><input type="text" class="form-control slug-input" value="'+slug+'" '+disabledAttribute+'/></div>';
                         output += '</div>';
                         output += '<div class="col-sm-2 py-1 d-flex justify-content-end">';
                             if(records[i]['tx_slug_locked'] === 1){
-                                output += '<div class="button-group ml-auto"><a class="btn btn-danger btn-sm"><i class="fa fa-lock"></i></a><a class="btn btn-default btn-sm btn-info"><i class="fa fa-info"></i></a></div>';
+                                output += '<div class="button-group ml-auto"><a class="btn btn-danger btn-sm" title="locked"><i class="fa fa-lock"></i></a><a class="btn btn-default btn-sm btn-info"><i class="fa fa-info"></i></a></div>';
                             }
                             else{
                                 output += '<div class="button-group ml-auto"><a class="btn btn-default btn-sm btn-save"><i class="fa fa-save"></i></a><a class="btn btn-default btn-sm btn-generate"><i class="fa fa-refresh"></i></a><a class="btn btn-default btn-sm btn-info"><i class="fa fa-info"></i></a></div>';

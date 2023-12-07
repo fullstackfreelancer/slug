@@ -156,8 +156,7 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
         $result = $queryBuilder
             ->count('uid')
             ->from('pages')
-            ->execute()
-            ->fetchColumn(0);
+            ->execute();
         return $result;
     }
 

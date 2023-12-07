@@ -1,10 +1,10 @@
 <div id="slug-header">
-    <div class="row">
+    <div class="row g-3">
         <div class="col-sm-4 col-md-3">
             <h1 class="d-inline-block" title="{extEmconf.description}">
                 <f:translate key="LLL:EXT:slug/Resources/Private/Language/locallang.xlf:ext.title"/>
-                <small class="text-primary"><f:translate key="LLL:EXT:slug/Resources/Private/Language/locallang.xlf:ext.version" arguments="{0:'{extEmconf.version}'}"/> ({extEmconf.state})</small>
             </h1>
+            <small class="text-primary"><f:translate key="LLL:EXT:slug/Resources/Private/Language/locallang.xlf:ext.version" arguments="{0:'{extEmconf.version}'}"/> ({extEmconf.state})</small>
             <f:if condition="{slugpro}">
                 <f:render partial="SlugPro/Version"/>
             </f:if>

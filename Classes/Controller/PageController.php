@@ -1,5 +1,6 @@
 <?php
 namespace SIMONKOEHLER\Slug\Controller;
+use Psr\Http\Message\ResponseInterface;
 use SIMONKOEHLER\Slug\Utility\HelperUtility;
 use SIMONKOEHLER\Slug\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Imaging\Icon;
@@ -14,26 +15,36 @@ use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Pagination\ArrayPaginator;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /*
  * This file was created by Simon Köhler
- * https://simon-koehler.com
+ * https://simonkoehler.com
  */
 
-class PageController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
+class PageController extends ActionController {
 
-    public $pageRepository;
+    protected int $id;
+    protected $pageRenderer;
     protected $iconFactory;
     protected $helper;
     protected $languages;
     protected $sites;
     protected $backendConfiguration;
+    protected ?ModuleTemplate $moduleTemplate = null;
 
     /**
-    * @param PageRepository $pageRepository
-    */
-    public function __construct(PageRepository $pageRepository) {
-         $this->pageRepository = $pageRepository;
+     * pageRepository
+     *
+     * @var \SIMONKOEHLER\Slug\Domain\Repository\PageRepository
+     */
+    protected $pageRepository;
+
+    public function __construct(protected readonly ModuleTemplateFactory $moduleTemplateFactory,)
+    {
          $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
          $this->helper = GeneralUtility::makeInstance(HelperUtility::class);
          $this->backendConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('slug');
@@ -41,12 +52,47 @@ class PageController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
     }
 
     /**
+     * Injects the session-Repository
+     *
+     * @param \SIMONKOEHLER\Slug\Domain\Repository\PageRepository $pageRepository
+     */
+    public function injectPageRepository(\SIMONKOEHLER\Slug\Domain\Repository\PageRepository $pageRepository)
+    {
+        $this->pageRepository = $pageRepository;
+    }
+
+    public function initializeAction()
+    {
+        $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+        $this->helper = GeneralUtility::makeInstance(HelperUtility::class);
+        $this->id = (int)($this->request->getQueryParams()['id'] ?? 0);
+        $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+    }
+
+    protected function defaultRendering(): ResponseInterface
+    {
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
+    }
+
+    protected function pageAction(): ResponseInterface
+    {
+        print_r($this->request->getArguments());
+        $this->view->assignMultiple([
+            'backendConfiguration' => $this->backendConfiguration,
+            'beLanguage' => $GLOBALS['BE_USER']->user['lang'],
+            'extEmconf' => $this->helper->getEmConfiguration('slug'),
+            'sites' => (array) $this->sites
+        ]);
+        return $this->defaultRendering();
+    }
+
+    /**
      * Generate an Ajax List
      */
-    protected function ajaxListAction()
+    protected function ajaxListAction(): ResponseInterface
     {
 
-        // Set the order by options for fluid viewhelper f:form.switch
         $filterOptions['orderby'] = [
             ['value' => 'crdate', 'label' => $this->helper->getLangKey('filter.form.select.option.creation_date')],
             ['value' => 'tstamp', 'label' => $this->helper->getLangKey('filter.form.select.option.tstamp')],
@@ -95,18 +141,21 @@ class PageController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             $slugpro = FALSE;
         }
 
-        // Assign variables to the view
+        //Assign variables to the view
         $this->view->assignMultiple([
             'backendConfiguration' => $this->backendConfiguration,
             'beLanguage' => $GLOBALS['BE_USER']->user['lang'],
             'extEmconf' => $this->helper->getEmConfiguration('slug'),
             'filterOptions' => $filterOptions,
             'sites' => (array) $this->sites,
-            'languages' => $this->helper->getLanguages(),
+            //'languages' => $this->helper->getLanguages(),
             'slugpro' => $slugpro,
-            'additionalTables' => $this->settings['additionalTables'],
-            'totalPages' => $this->pageRepository->findTotalPages()
+            'additionalTables' => $this->settings['additionalTables'] ? $this->settings['additionalTables'] : [],
+            //'totalPages' => $this->pageRepository->findTotalPages()
         ]);
+
+        //return $this->htmlResponse('Hello');
+        return $this->defaultRendering();
     }
 
     /**
@@ -182,9 +231,11 @@ class PageController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             'beLanguage' => $GLOBALS['BE_USER']->user['lang'],
             'extEmconf' => $this->helper->getEmConfiguration('slug'),
             'filterOptions' => $filterOptions,
-            'additionalTables' => $this->settings['additionalTables'],
+            'additionalTables' => $this->settings['additionalTables'] ? $this->settings['additionalTables'] : [],
             'totalPages' => $this->pageRepository->findTotalPages()
         ]);
+
+        return $this->defaultRendering();
 
     }
 

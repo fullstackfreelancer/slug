@@ -14,7 +14,7 @@ module.tx_slug {
     settings{
         additionalTables{
 
-            /*
+
             tx_news_domain_model_news{
                 label = News                                                        # Label for the backend
                 slugField = path_segment                                            # Database field where the slug is saved
@@ -22,7 +22,7 @@ module.tx_slug {
                 pid = 1                                                             # Show only records from given PID (parent page)
                 icon = EXT:news/Resources/Public/Icons/news_domain_model_news.svg   # The icon for your records. Please make sure the file exsists!
             }
-            */
+
 
         }
     }

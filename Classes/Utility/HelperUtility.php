@@ -94,15 +94,16 @@ class HelperUtility {
 
     // Get all languages
     public function getLanguages(){
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_language');
-        $statement = $queryBuilder
-            ->select('*')
-            ->from('sys_language')
-            ->execute();
-        $output = array();
-        while ($row = $statement->fetch()) {
-            array_push($output, $row);
-        }
+        // $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_language');
+        // $statement = $queryBuilder
+        //     ->select('*')
+        //     ->from('sys_language')
+        //     ->execute();
+        // $output = array();
+        // while ($row = $statement->fetch()) {
+        //     array_push($output, $row);
+        // }
+        $output = [['uid'=>1,'isocode'=>'de']];
         return $output;
     }
 
