@@ -1,12 +1,12 @@
 {
-    "name": "koehlersimon/slug",
+    "name": "fullstackfreelancer/slug",
     "description": "Helps you managing the URL slugs of your TYPO3 site",
     "type": "typo3-cms-extension",
-    "version": "4.0.0",
+    "version": "5.0.0",
     "license": "GPL-3.0",
     "require": {
-        "php": ">=7.0.0",
-        "typo3/cms-core": "^9.5 || ^10.4 || ^11.1"
+        "php": ">=8.0.0",
+        "typo3/cms-core": "^9.5 || ^10.4 || ^12.5"
     },
     "keywords": [
         "TYPO3",
@@ -20,11 +20,11 @@
         "tool",
         "plugin"
     ],
-    "homepage": "https://simon-koehler.com/en",
+    "homepage": "https://simonkoehler.com/",
     "authors": [
         {
             "name": "Simon Köhler",
-            "email": "info@simon-koehler.com"
+            "email": "info@simonkoehler.com"
         }
     ],
     "autoload": {
