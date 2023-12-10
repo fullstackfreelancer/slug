@@ -1,6 +1,7 @@
 <?php
 namespace SIMONKOEHLER\Slug\Controller;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use SIMONKOEHLER\Slug\Utility\HelperUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -24,7 +25,7 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
     /**
      * function ajaxList
      */
-    public function ajaxList(): ResponseInterface
+    public function ajaxList(ServerRequestInterface $request): ResponseInterface
     {
 
         $helper = GeneralUtility::makeInstance(HelperUtility::class);
@@ -52,7 +53,7 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             $row['site'] = $helper->getSiteByPageUid($row['uid']);
             $output[] = $row;
         }
-        return $this->htmlResponse();
+        return new JsonResponse($output);
     }
 
 

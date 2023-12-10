@@ -1,32 +1,34 @@
 <div id="slug-header">
-    <div class="row g-3">
-        <div class="col-sm-4 col-md-3">
-            <h1 class="d-inline-block" title="{extEmconf.description}">
-                <f:translate key="LLL:EXT:slug/Resources/Private/Language/locallang.xlf:ext.title"/>
-            </h1>
-            <small class="text-primary"><f:translate key="LLL:EXT:slug/Resources/Private/Language/locallang.xlf:ext.version" arguments="{0:'{extEmconf.version}'}"/> ({extEmconf.state})</small>
-            <f:if condition="{slugpro}">
-                <f:render partial="SlugPro/Version"/>
-            </f:if>
-        </div>
-        <div class="col-sm-8 col-md-9">
-            <div class="btn-group pull-right">
-                <f:link.action action="ajaxList" controller="Page" class="btn btn-dark text-light">
-                    <i class="fa fa-file-o"></i> {f:translate(key:'button.pages', extensionName: slug)}
-                </f:link.action>
-                <f:if condition="{backendConfiguration.treeEnabled}">
-                    <f:link.action action="tree" controller="Page" class="btn btn-dark text-light">
-                        <i class="fa fa-sitemap"></i> {f:translate(key:'button.tree', extensionName: slug)}
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-sm-4 col-md-3">
+                <h1 class="d-inline-block" title="{extEmconf.description}">
+                    <f:translate key="LLL:EXT:slug/Resources/Private/Language/locallang.xlf:ext.title"/>
+                </h1>
+                <small class="text-primary"><f:translate key="LLL:EXT:slug/Resources/Private/Language/locallang.xlf:ext.version" arguments="{0:'{extEmconf.version}'}"/> ({extEmconf.state})</small>
+                <f:if condition="{slugpro}">
+                    <f:render partial="SlugPro/Version"/>
+                </f:if>
+            </div>
+            <div class="col-sm-8 col-md-9">
+                <div class="btn-group pull-right">
+                    <f:link.action action="list" controller="Page" class="btn btn-default">
+                        <i class="bi bi-file"></i> {f:translate(key:'button.pages', extensionName: slug)}
                     </f:link.action>
-                </f:if>
-                <f:if condition="{backendConfiguration.recordEnabled}">
-                    <f:for each="{additionalTables}" as="table" key="label">
-                        <f:link.action action="additionalTable" controller="Extension" class="btn btn-dark text-light" arguments="{table:label}">
-                        <i class="fa fa-file-o"></i>
-                        {table.label}
+                    <f:if condition="{backendConfiguration.treeEnabled}">
+                        <f:link.action action="tree" controller="Page" class="btn btn-default">
+                            <i class="bi bi-tree"></i> {f:translate(key:'button.tree', extensionName: slug)}
                         </f:link.action>
-                    </f:for>
-                </f:if>
+                    </f:if>
+                    <f:if condition="{backendConfiguration.recordEnabled}">
+                        <f:for each="{additionalTables}" as="table" key="label">
+                            <f:link.action action="list" controller="Extension" class="btn btn-default" arguments="{table:label}">
+                                <i class="bi bi-file"></i>
+                                {table.label}
+                            </f:link.action>
+                        </f:for>
+                    </f:if>
+                </div>
             </div>
         </div>
     </div>

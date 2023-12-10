@@ -221,7 +221,7 @@
 
 
 			<trans-unit id="footer.about">
-				<source>About this Extension</source>
+				<source>About</source>
 			</trans-unit>
 			<trans-unit id="footer.docs">
 				<source>Docs/Code</source>

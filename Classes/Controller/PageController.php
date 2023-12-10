@@ -77,20 +77,23 @@ class PageController extends ActionController {
 
     protected function pageAction(): ResponseInterface
     {
-        print_r($this->request->getArguments());
+        $pageUid = $this->request->getQueryParams()['id'];
+        $pageData = $this->pageRepository->getPageData($pageUid);
         $this->view->assignMultiple([
             'backendConfiguration' => $this->backendConfiguration,
             'beLanguage' => $GLOBALS['BE_USER']->user['lang'],
             'extEmconf' => $this->helper->getEmConfiguration('slug'),
-            'sites' => (array) $this->sites
+            'sites' => (array) $this->sites,
+            'page' => $pageData,
+            'translations' => []
         ]);
         return $this->defaultRendering();
     }
 
     /**
-     * Generate an Ajax List
+     * Generate the List View
      */
-    protected function ajaxListAction(): ResponseInterface
+    protected function listAction(): ResponseInterface
     {
 
         $filterOptions['orderby'] = [
@@ -148,10 +151,10 @@ class PageController extends ActionController {
             'extEmconf' => $this->helper->getEmConfiguration('slug'),
             'filterOptions' => $filterOptions,
             'sites' => (array) $this->sites,
-            //'languages' => $this->helper->getLanguages(),
+            'languages' => $this->helper->getLanguages(),
             'slugpro' => $slugpro,
             'additionalTables' => $this->settings['additionalTables'] ? $this->settings['additionalTables'] : [],
-            //'totalPages' => $this->pageRepository->findTotalPages()
+            'totalPages' => $this->pageRepository->findTotalPages()
         ]);
 
         //return $this->htmlResponse('Hello');
@@ -161,7 +164,7 @@ class PageController extends ActionController {
     /**
      * List all slugs from the pages table
      */
-    protected function listAction()
+    protected function listActionOld()
     {
 
         // Check if filter variables are available, otherwise set default values from ExtensionConfiguration
@@ -243,7 +246,7 @@ class PageController extends ActionController {
     /**
      * Generate a tree view
      */
-    protected function treeAction()
+    protected function treeAction(): ResponseInterface
     {
 
         if($this->request->hasArgument('siteRoot')){
@@ -292,6 +295,8 @@ class PageController extends ActionController {
         else{
             //$this->addFlashMessage('Error: No Site root found! PageController.php Line 130');
         }
+
+        return $this->defaultRendering();
 
     }
 

@@ -1,5 +1,6 @@
 <?php
 namespace SIMONKOEHLER\Slug\Controller;
+use Psr\Http\Message\ResponseInterface;
 use SIMONKOEHLER\Slug\Utility\HelperUtility;
 use SIMONKOEHLER\Slug\Domain\Repository\ExtensionRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -27,13 +28,15 @@ class ExtensionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContro
     /**
     * @param ExtensionRepository $extensionRepository
     */
-    public function __construct(ExtensionRepository $extensionRepository) {
+    public function __construct(ExtensionRepository $extensionRepository)
+    {
          $this->extensionRepository = $extensionRepository;
          $this->helper = GeneralUtility::makeInstance(HelperUtility::class);
          $this->backendConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('slug');
     }
 
-    public function additionalTableAction() {
+    public function listAction(): ResponseInterface
+    {
 
         $backendConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('slug');
 
@@ -116,6 +119,8 @@ class ExtensionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContro
             'additionalTables' => $this->settings['additionalTables'],
             'extEmconf' => $this->helper->getEmConfiguration('slug'),
         ]);
+
+        return $this->htmlResponse();
 
     }
 

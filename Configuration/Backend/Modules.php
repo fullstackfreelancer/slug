@@ -6,7 +6,7 @@ use SIMONKOEHLER\Slug\Controller\ExtensionController;
  * Definitions for modules provided by EXT:examples
  */
 return [
-    'slug_web' => [
+    'slug_page' => [
         'parent' => 'web',
         'position' => ['after' => 'web_info'],
         'access' => 'user,group',
@@ -21,19 +21,23 @@ return [
             ],
         ],
     ],
-    'slug_sites' => [
+    'slug_list' => [
         'parent' => 'site',
         'standalone'=> true,
         'position' => ['after' => 'web_info'],
         'access' => 'user,group',
         'workspaces' => 'live',
-        'path' => '/module/slug/site',
+        'path' => '/module/slug/list',
         'iconIdentifier' => 'module-slug',
         'labels' => 'LLL:EXT:slug/Resources/Private/Language/locallang_slugs.xlf',
         'extensionName' => 'Slug',
         'controllerActions' => [
             PageController::class => [
-                'ajaxList',
+                'list',
+                'tree'
+            ],
+            ExtensionController::class => [
+                'list'
             ],
         ],
         'moduleData' => [

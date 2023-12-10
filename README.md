@@ -70,6 +70,9 @@ module.tx_slug {
 }
 ```
 
+## Backend Deep-Linking
+Link to the slug Editor for a single page: "https://yourbackend.com/typo3/module/slug/page?id=3"
+
 ## KNOWN PROBLEMS
 
 ### Oops, an error occured!: Invalid configuration: "vendorName" is not set

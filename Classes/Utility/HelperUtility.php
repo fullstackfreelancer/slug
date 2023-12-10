@@ -52,9 +52,9 @@ class HelperUtility {
                 $output = $siteConf['base'];
             }
 
-            if($row['isocode']){
-                $output = $output.'/'.$pageData['isocode'];
-            }
+            // if($row['isocode']){
+            //     $output = $output.'/'.$pageData['isocode'];
+            // }
         }
         catch (SiteNotFoundException $e) {
            $output = '[no site]';
@@ -207,7 +207,7 @@ class HelperUtility {
            ->count('uid')
            ->from($table)
            ->execute()
-           ->fetchColumn(0);
+           ->fetchOne();
         return $count;
     }
 

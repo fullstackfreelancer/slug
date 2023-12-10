@@ -18,6 +18,7 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
     protected $fieldName = 'slug';
     protected $languages;
 
+
     public function findAllFiltered($filterVariables) {
         $this->languages = $this->getLanguages();
         $queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)->getQueryBuilderForTable('pages');
@@ -156,8 +157,24 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
         $result = $queryBuilder
             ->count('uid')
             ->from('pages')
-            ->execute();
+            ->where('deleted = 0')
+            ->executeQuery()
+            ->fetchOne();
         return $result;
+    }
+
+    public function getPageData($pageUid){
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+        $queryBuilder->getRestrictions()->removeAll();
+        $result = $queryBuilder
+            ->select('*')
+            ->from('pages')
+            ->where(
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($pageUid))
+            )
+            ->execute();
+        $row = $result->fetchAssociative();
+        return $row;
     }
 
 }

@@ -1,6 +1,20 @@
 <f:layout name="Page" />
 
 <f:section name="content">
-<h1>SLUG Page Module (no CSS)</h1>
-<f:debug>{_all}</f:debug>
+
+<div class="p-3 bg-light">
+    <h1>{page.title}</h1>
+    <div class="input-group">
+        <input id="slug-input" type="text" name="slug" value="{page.slug}" class="form-control form-control-lg">
+        <button data-slug-edit="{page.uid}" class="btn btn-default fs-5"><i class="bi bi-pen"></i> edit</button>
+        <button data-slug-generate="{page.uid}" class="btn btn-primary fs-5"><i class="bi bi-arrow-repeat"></i> generate</button>
+    </div>
+    <div id="slug-preview">
+
+    </div>
+    <f:if condition="{translations}">
+        <h4>Translated Pages:</h4>
+    </f:if>
+</div>
+
 </f:section>

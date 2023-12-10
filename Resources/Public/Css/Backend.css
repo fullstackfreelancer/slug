@@ -16,13 +16,6 @@ div#typo3-docbody {
 
 #slug-header {
   margin-bottom: 1.4rem;
-  background-color: #292929;
-  color: white;
-  padding: 2rem 2rem 0 2rem;
-}
-
-#slug-list-wrap {
-  padding: 0 2rem;
 }
 
 #slug-list-wrap tr.deleted {
@@ -35,14 +28,13 @@ div#typo3-docbody {
 }
 
 #slug-footer {
-  background-color: #292929;
-  color: white;
+  color: #666 !important;
   padding: 1.5rem 2rem;
   color: white;
 }
 
 #slug-footer a {
-  color: #ccc;
+  color: #333;
 }
 
 #slug-tree-module {

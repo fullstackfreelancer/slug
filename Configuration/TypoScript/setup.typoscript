@@ -16,11 +16,16 @@ module.tx_slug {
 
 
             tx_news_domain_model_news{
-                label = News                                                        # Label for the backend
-                slugField = path_segment                                            # Database field where the slug is saved
-                titleField = title                                                  # Field thats used for the title display
-                pid = 1                                                             # Show only records from given PID (parent page)
-                icon = EXT:news/Resources/Public/Icons/news_domain_model_news.svg   # The icon for your records. Please make sure the file exsists!
+                # Label for the backend
+                label = News
+                # Database field where the slug is saved
+                slugField = path_segment
+                # Field thats used for the title display
+                titleField = title
+                # Show only records from given PID (parent page)
+                pid = 1
+                # The icon for your records. Please make sure the file exsists!
+                icon = EXT:news/Resources/Public/Icons/news_domain_model_news.svg
             }
 
 

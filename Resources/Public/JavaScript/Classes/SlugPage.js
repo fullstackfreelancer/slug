@@ -1,11 +1,7 @@
-class SlugHelper{
+class SlugPage{
 
-    preloader(){
-        return '<div class="d-flex justify-content-center mb-4"><span class="icon icon-size-large icon-state-default icon-spin"><span class="icon-markup"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="#212121"><path d="M8 15c-3.86 0-7-3.141-7-7 0-3.86 3.14-7 7-7 3.859 0 7 3.14 7 7 0 3.859-3.141 7-7 7zM8 3C5.243 3 3 5.243 3 8s2.243 5 5 5 5-2.243 5-5-2.243-5-5-5z" opacity=".3"/><path d="M14 9a1 1 0 0 1-1-1c0-2.757-2.243-5-5-5a1 1 0 0 1 0-2c3.859 0 7 3.14 7 7a1 1 0 0 1-1 1z"/></g></svg></span></span></div>';
-    }
-
-    save(uid,slug,sitePrefix,type){
-        let url = TYPO3.settings.ajaxUrls['savePageSlug']+'&slug='+slug+'&uid='+uid;
+    saveSlug(uid,slug,sitePrefix,type){
+        let url = TYPO3.settings.ajaxUrls['slug_save_page']+'&slug='+slug+'&uid='+uid;
         let req = new XMLHttpRequest();
         let slugRow = document.getElementById('record-'+uid);
         let slugInputField = slugRow.querySelector('.slug-input');
@@ -36,28 +32,46 @@ class SlugHelper{
         req.send();
     }
 
-    getPageIconByType(doktype,isroot){
-        if(isroot === 1){
-            return 'globe text-primary';
-        }
-        else{
-            switch(doktype) {
-                case 3:
-                    return 'link';
-                break;
-                case 199:
-                    return 'minus';
-                break;
-                case 254:
-                    return 'folder';
-                break;
-                case 4:
-                    return 'link';
-                break;
-                default:
-                    return 'file';
+    generateSlug(uid, sitePrefix){
+
+        const url = `${TYPO3.settings.ajaxUrls['slug_generate']}&uid=${uid}`;
+        console.log(url)
+
+        const req = new XMLHttpRequest();
+        const slugInputField = document.getElementById('slug-input');
+        const slugPreview = document.getElementById('slug-preview');
+        const slugValue = slugInputField.value;
+
+        slugInputField.setAttribute('disabled', 'disabled');
+        req.open("GET", url, true);
+        req.setRequestHeader("Content-type", "application/json; charset=utf-8");
+        req.onreadystatechange = () => {
+            if (req.readyState === 4) {
+                if (req.status === 200) {
+                    try {
+                        const response = JSON.parse(req.responseText);
+                        this.handleResponse(response, slugInputField, slugPreview, sitePrefix);
+                    } catch (error) {
+                        top.TYPO3.Notification.error('JSON Parsing Error', error.message);
+                    }
+                } else {
+                    top.TYPO3.Notification.error('Ajax Error', `${slugNotes['notes.error.ajax']} ${req.statusText}`);
+                }
             }
+        };
+        req.send()
+    };
+
+    handleResponse(response, slugInputField, slugPreview, sitePrefix){
+        if (response.slug !== slugInputField.value) {
+            slugPreview.innerHTML = `${sitePrefix}${response.slug}`
+            slugInputField.value = response.slug
+            slugInputField.classList.add('not-saved')
+            top.TYPO3.Notification.success('success!!', response.slug)
+        } else {
+            top.TYPO3.Notification.info('nothing changed...', response.slug)
         }
+        slugInputField.removeAttribute('disabled')
     }
 
     slugInfo(uid,type){
@@ -91,12 +105,6 @@ class SlugHelper{
             }
         }
         req.send();
-    }
-
-    updateGooglePreviewUrl(url,uid){
-        let obj = document.querySelector('div[data-googleurl="'+uid+'"]');
-        let obj_exists = obj !== null;
-        if(obj_exists){ obj.innerHTML = url; }
     }
 
 }

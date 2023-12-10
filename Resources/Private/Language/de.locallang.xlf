@@ -215,7 +215,7 @@
 
 
 			<trans-unit id="footer.about">
-				<target>Über diese Extension</target>
+				<target>Über Slug</target>
 			</trans-unit>
 			<trans-unit id="footer.docs">
 				<target>Dokumentation/Code</target>
