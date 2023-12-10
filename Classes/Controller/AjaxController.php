@@ -15,11 +15,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
-/*
- * This file was created by Simon Köhler
- * https://simonkoehler.com
- */
-
 class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 
     /**
