@@ -45,8 +45,8 @@ class PageController extends ActionController {
 
     public function __construct(protected readonly ModuleTemplateFactory $moduleTemplateFactory,)
     {
-         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-         $this->helper = GeneralUtility::makeInstance(HelperUtility::class);
+         //$this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+         //$this->helper = GeneralUtility::makeInstance(HelperUtility::class);
          $this->backendConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('slug');
          $this->sites = GeneralUtility::makeInstance(SiteFinder::class)->getAllSites();
     }

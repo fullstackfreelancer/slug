@@ -1,41 +1,67 @@
 <?php
 namespace SIMONKOEHLER\Slug\Controller;
+use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Imaging\IconSize;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use Psr\Http\Message\ResponseInterface;
 use SIMONKOEHLER\Slug\Utility\HelperUtility;
 use SIMONKOEHLER\Slug\Domain\Repository\ExtensionRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
-/*
- * This file was created by Simon Köhler
- * https://simonkoehler.com
- */
-
-class ExtensionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
+class ExtensionController extends ActionController {
 
     /**
     * @var ExtensionRepository
     */
-    public $extensionRepository;
+    protected $extensionRepository;
 
     /**
     * @var HelperUtility
     */
     public $helper;
     protected $backendConfiguration;
-
+    protected ?ModuleTemplate $moduleTemplate = null;
 
     /**
-    * @param ExtensionRepository $extensionRepository
+    * @param ModuleTemplateFactory $moduleTemplateFactory
     */
-    public function __construct(ExtensionRepository $extensionRepository)
+    public function __construct(protected readonly ModuleTemplateFactory $moduleTemplateFactory)
     {
-         $this->extensionRepository = $extensionRepository;
-         $this->helper = GeneralUtility::makeInstance(HelperUtility::class);
-         $this->backendConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('slug');
+        //$this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+        //$this->helper = GeneralUtility::makeInstance(HelperUtility::class);
+        $this->backendConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('slug');
+        $this->sites = GeneralUtility::makeInstance(SiteFinder::class)->getAllSites();
     }
 
-    public function listAction(): ResponseInterface
+    /**
+     * Injects the Repository
+     *
+     * @param \SIMONKOEHLER\Slug\Domain\Repository\ExtensionRepository $extensionRepository
+     */
+    public function injectExtensionRepository(\SIMONKOEHLER\Slug\Domain\Repository\ExtensionRepository $extensionRepository)
+    {
+        $this->extensionRepository = $extensionRepository;
+    }
+
+    public function initializeAction()
+    {
+        $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+        $this->helper = GeneralUtility::makeInstance(HelperUtility::class);
+        $this->id = (int)($this->request->getQueryParams()['id'] ?? 0);
+        $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+    }
+
+    protected function defaultRendering(): ResponseInterface
+    {
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
+    }
+
+    protected function listAction(): ResponseInterface
     {
 
         $backendConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('slug');
@@ -120,7 +146,7 @@ class ExtensionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContro
             'extEmconf' => $this->helper->getEmConfiguration('slug'),
         ]);
 
-        return $this->htmlResponse();
+        return $this->defaultRendering();
 
     }
 

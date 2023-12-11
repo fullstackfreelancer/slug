@@ -1,101 +1,47 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    const slugList = new SlugList();
-    const slugHelper = new SlugHelper();
+    let titleField = 'title'
+    let slugField = 'slug'
+    let recordTable = 'pages'
 
-    let filter_key = document.getElementById('filter_key');
-    let filter_maxentries = document.getElementById('filter_maxentries');
-    let filter_orderby = document.getElementById('filter_orderby');
-    let filter_order = document.getElementById('filter_order');
-    let filter_status = document.getElementById('filter_status');
+    const slugHelper = new SlugHelper()
+          slugHelper.initFilterFields(buildHTML,recordTable)
+          slugHelper.loadList(recordTable,titleField,slugField,0,null,buildHTML)
 
-    let filter_key_value = '';
-    let filter_maxentries_value = filter_maxentries.value;
-    let filter_orderby_value = filter_orderby.value;
-    let filter_order_value = filter_order.value;
-    let filter_status_value = filter_status.value;
+    function buildHTML(records){
 
-    filter_maxentries.addEventListener('change',function(e){
-        filter_maxentries_value = filter_maxentries.value;
-        loadList('pages','title','slug',0);
-    });
-
-    filter_key.addEventListener('input',function(e){
-        filter_key_value = filter_key.value;
-        loadList('pages','title','slug',0);
-    });
-
-    filter_orderby.addEventListener('change',function(e){
-        filter_orderby_value = filter_orderby.value;
-        loadList('pages','title','slug',0);
-    });
-
-    filter_order.addEventListener('change',function(e){
-        filter_order_value = filter_order.value;
-        loadList('pages','title','slug',0);
-    });
-
-    filter_status.addEventListener('change',function(e){
-        filter_status_value = filter_status.value;
-        loadList('pages','title','slug',0);
-    });
-
-    function loadList(table,titleField,slugField,page){
-
-        console.log(top.TYPO3.settings)
-
-        // Set variables
-        let url = top.TYPO3.settings.ajaxUrls['slug_list']+'&table='+table+'&page='+page+'&orderby='+filter_orderby_value+'&order='+filter_order_value+'&maxentries='+filter_maxentries_value+'&key='+filter_key_value;
-        let req = new XMLHttpRequest();
         let target = document.getElementById('slug-list-wrap');
         let output = '<div class="container">';
 
-        // Add preloader to target container
-        target.innerHTML = slugHelper.preloader();
-
-        req.open("GET", url, true);
-        req.setRequestHeader("Content-type", "application/json; charset=utf-8");
-        req.onreadystatechange = function() {
-            if(req.readyState === 4) {
-                if(req.status == 200) {
-                    let records = JSON.parse(req.responseText);
-                    document.querySelector('.record-count').innerHTML = records.length;
-                    for (var i = 0; i < records.length; i++) {
-                        let title = records[i][titleField];
-                        let slug = records[i][slugField];
-                        let sitePrefix = records[i]['sitePrefix'];
-                        let fullUrl = sitePrefix + slug;
-                        let disabledAttribute = records[i]['tx_slug_locked'] ? 'disabled' : '';
-                        output += '<div id="record-'+records[i]['uid']+'" data-siteprefix="'+sitePrefix+'" data-record="'+records[i]['uid']+'" class="slug-record row mb-2 border-bottom">';
-                        output += '<div class="col py-1">';
-                            output += '<div>';
-                            output += '<h5 class="slug-title"><i class="bi bi-'+slugHelper.getPageIconByType(records[i]['doktype'],records[i]['is_siteroot'])+' fa-fw" title="id='+records[i]['uid']+'"></i> '+title+'</h5>';
-                            output += '<a href="'+fullUrl+'" target="_blank" class="slug-preview">'+ fullUrl + '</a>';
-                            output += '</div>';
-                        output += '</div>';
-                        output += '<div class="col py-1">';
-                            output += '<div class="input-group"><span class="input-group-addon">'+records[i]['sys_language_uid']+'</span><input type="text" class="form-control slug-input" value="'+slug+'" '+disabledAttribute+'/></div>';
-                        output += '</div>';
-                        output += '<div class="col-sm-2 py-1 d-flex justify-content-end">';
-                            if(records[i]['tx_slug_locked'] === 1){
-                                output += '<div class="button-group ml-auto"><a class="btn btn-danger btn-sm" title="locked"><i class="bi bi-lock"></i></a><a class="btn btn-default btn-sm btn-info"><i class="bi bi-info-circle"></i></a></div>';
-                            }
-                            else{
-                                output += '<div class="button-group ml-auto"><a class="btn btn-default btn-sm btn-save"><i class="bi bi-save"></i></a><a class="btn btn-default btn-sm btn-generate"><i class="bi bi-arrow-repeat"></i></a><a class="btn btn-default btn-sm btn-info"><i class="bi bi-info-circle"></i></a></div>';
-                            }
-                        output += '</div>';
-                        output += '<div class="info-container"></div>';
-                        output += '</div>';
-                    }
-                    target.innerHTML = output + '</div>';
-                    initInterface();
+        for (var i = 0; i < records.length; i++) {
+            let title = records[i][titleField];
+            let slug = records[i][slugField];
+            let sitePrefix = records[i]['sitePrefix'];
+            let fullUrl = sitePrefix + slug;
+            let disabledAttribute = records[i]['tx_slug_locked'] ? 'disabled' : '';
+            output += '<div id="record-'+records[i]['uid']+'" data-siteprefix="'+sitePrefix+'" data-record="'+records[i]['uid']+'" class="slug-record row mb-2 border-bottom">';
+            output += '<div class="col py-1">';
+                output += '<div>';
+                output += '<h5 class="slug-title"><i class="bi bi-'+slugHelper.getPageIconByType(records[i]['doktype'],records[i]['is_siteroot'])+' fa-fw" title="id='+records[i]['uid']+'"></i> '+title+'</h5>';
+                output += '<a href="'+fullUrl+'" target="_blank" class="slug-preview">'+ fullUrl + '</a>';
+                output += '</div>';
+            output += '</div>';
+            output += '<div class="col py-1">';
+                output += '<div class="input-group"><span class="input-group-addon">'+records[i]['sys_language_uid']+'</span><input type="text" class="form-control slug-input" value="'+slug+'" '+disabledAttribute+'/></div>';
+            output += '</div>';
+            output += '<div class="col-sm-2 py-1 d-flex justify-content-end">';
+                if(records[i]['tx_slug_locked'] === 1){
+                    output += '<div class="button-group ml-auto"><a class="btn btn-danger btn-sm" title="locked"><i class="bi bi-lock"></i></a><a class="btn btn-default btn-sm btn-info"><i class="bi bi-info-circle"></i></a></div>';
                 }
                 else{
-                    top.TYPO3.Notification.error('Ajax Error', slugNotes['notes.error.ajax'] + '' + req.statusText);
+                    output += '<div class="button-group ml-auto"><a class="btn btn-default btn-sm btn-save"><i class="bi bi-save"></i></a><a class="btn btn-default btn-sm btn-generate"><i class="bi bi-arrow-repeat"></i></a><a class="btn btn-default btn-sm btn-info"><i class="bi bi-info-circle"></i></a></div>';
                 }
-            }
+            output += '</div>';
+            output += '<div class="info-container"></div>';
+            output += '</div>';
         }
-        req.send();
+        target.innerHTML = output + '</div>';
+        initInterface();
     }
 
     function initInterface(){
@@ -112,26 +58,26 @@ document.addEventListener("DOMContentLoaded", function() {
             if(button_save){
                 button_save.addEventListener('click',function(e){
                     let slug = row.querySelector('input[type="text"]').value;
-                    slugList.save(uid,slug,sitePrefix,'page');
+                    slugHelper.save(uid,slug,sitePrefix,'page');
                 });
             }
 
             if(button_generate){
                 button_generate.addEventListener('click',function(e){
-                    slugList.generate(uid,sitePrefix,'page');
+                    slugHelper.generate(uid,sitePrefix,'page');
                 });
             }
 
             if(button_info){
                 button_info.addEventListener('click',function(e){
-                    slugList.slugInfo(uid,'page');
+                    slugHelper.slugInfo(uid,'page');
                 });
             }
 
             if(slug_input){
                 slug_input.addEventListener('input',function(e){
                     slug_preview.innerHTML = sitePrefix + slug_input.value;
-                    slugList.updateGooglePreviewUrl(sitePrefix + slug_input.value,uid);
+                    slugHelper.updateGooglePreviewUrl(sitePrefix + slug_input.value,uid);
                 });
             }
 
@@ -142,7 +88,5 @@ document.addEventListener("DOMContentLoaded", function() {
 
         });
     }
-
-    loadList('pages','title','slug',0);
 
 });
