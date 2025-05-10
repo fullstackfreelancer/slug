@@ -3,11 +3,12 @@ class SlugHelper{
     // Loads any kind of record that has a title and a slug field
     loadList(table,titleField,slugField,page,filterField = null,callbackFunction = null){
         let orderby = filterField !== null ? (filterField.orderby).value : 'crdate'
-        let order = filterField !== null ? filterField.order.value : 'DESC'
-        let maxentries = filterField !== null ? filterField.maxentries.value : '10'
+        let order = filterField !== null ? filterField.order.value : 'ASC'
+        let maxentries = filterField !== null ? filterField.maxentries.value : '20'
         let key = filterField !== null ? filterField.key.value : ''
+        let status = filterField !== null ? filterField.status.value : ''
 
-        let url = top.TYPO3.settings.ajaxUrls['slug_list']+'&table='+table+'&page='+page+'&orderby='+orderby+'&order='+order+'&maxentries='+maxentries+'&key='+key;
+        let url = top.TYPO3.settings.ajaxUrls['slug_list']+'&table='+table+'&page='+page+'&orderby='+orderby+'&order='+order+'&maxentries='+maxentries+'&key='+key+'&status='+status;
         let req = new XMLHttpRequest();
         let target = document.getElementById('slug-list-wrap');
         let output = '<div class="container">';
@@ -59,7 +60,7 @@ class SlugHelper{
     }
 
     preloader(){
-        return '<div class="d-flex justify-content-center mb-4"><span class="icon icon-size-large icon-state-default icon-spin"><span class="icon-markup"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g fill="#212121"><path d="M8 15c-3.86 0-7-3.141-7-7 0-3.86 3.14-7 7-7 3.859 0 7 3.14 7 7 0 3.859-3.141 7-7 7zM8 3C5.243 3 3 5.243 3 8s2.243 5 5 5 5-2.243 5-5-2.243-5-5-5z" opacity=".3"/><path d="M14 9a1 1 0 0 1-1-1c0-2.757-2.243-5-5-5a1 1 0 0 1 0-2c3.859 0 7 3.14 7 7a1 1 0 0 1-1 1z"/></g></svg></span></span></div>';
+        return '<div class="d-flex justify-content-center mb-4">Loading...</div>';
     }
 
     save(uid,slug,sitePrefix,type){

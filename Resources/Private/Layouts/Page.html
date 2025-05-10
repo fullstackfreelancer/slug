@@ -1,14 +1,25 @@
-<html xmlns:f="https://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+{namespace core = TYPO3\CMS\Core\ViewHelpers}
+<html
+   xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+   xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+   xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+   data-namespace-typo3-fluid="true">
 
     <f:asset.css identifier="slug" href="EXT:slug/Resources/Public/Css/Backend.css"/>
     <f:asset.css identifier="slug_icons" href="EXT:slug/Resources/Public/Libs/bootstrap-icons/font/bootstrap-icons.min.css"/>
-    <f:asset.script identifier="slug_page_class" src="EXT:slug/Resources/Public/JavaScript/Classes/SlugPage.js"/>
-    <f:asset.script identifier="slug_helper_class" src="EXT:slug/Resources/Public/JavaScript/Classes/SlugHelper.js"/>
-    <f:asset.script identifier="slug_page_controller" src="EXT:slug/Resources/Public/JavaScript/PageController.js"/>
+
+    <f:be.pageRenderer includeJavaScriptModules="{
+         0: '@simonkoehler/slug/PageController.js'
+      }"
+      />
+
+<f:asset.css identifier="slug" href="EXT:slug/Resources/Public/Css/Backend.css"/>
+<f:asset.css identifier="slug_icons" href="EXT:slug/Resources/Public/Libs/bootstrap-icons/font/bootstrap-icons.min.css"/>
 
     <section id="typo3-inner-docbody">
         <f:flashMessages />
-        <f:render section="content" />
+        PAGE TLAYOUT
+        <f:render section="Content" />
         <f:render partial="ModuleFooter" />
     </section>
 

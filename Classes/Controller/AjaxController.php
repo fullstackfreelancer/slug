@@ -4,6 +4,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use SIMONKOEHLER\Slug\Utility\HelperUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -27,30 +28,174 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
         $output = [];
         $queryParams = $request->getQueryParams();
 
-        $currentPage = $queryParams['page'];
         $entriesPerPage = $queryParams['maxentries'];
         $totalRecords = $helper->getTotalRecords($queryParams['table']);
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($queryParams['table']);
         $queryBuilder->getRestrictions()->removeAll();
         $query = $queryBuilder
-            ->select('*')
+            ->select(
+                'p.uid AS uid',
+                'p.title AS title',
+                'p.nav_title AS nav_title',
+                'p.slug AS slug',
+                'p.sys_language_uid AS sys_language_uid',
+                'p.l10n_parent AS l10n_parent',
+                'p.crdate AS crdate',
+                'p.deleted AS deleted',
+                'p.hidden AS hidden',
+                'p.doktype AS doktype',
+                'p.tstamp AS tstamp',
+                'p.seo_title AS seo_title',
+                't.uid AS t_uid',
+                't.title AS t_title',
+                't.nav_title AS t_nav_title',
+                't.slug AS t_slug',
+                't.sys_language_uid AS t_sys_language_uid'
+            )
+            ->from($queryParams['table'], 'p')
+            ->leftJoin(
+                'p',
+                $queryParams['table'],
+                't',
+                $queryBuilder->expr()->and(
+                    $queryBuilder->expr()->eq('t.l10n_parent', $queryBuilder->quoteIdentifier('p.uid')),
+                    $queryBuilder->expr()->gt('t.sys_language_uid', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
+                )
+            )
+            ->where(
+                $queryBuilder->expr()->eq('p.sys_language_uid', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
+            )
+            ->setMaxResults($entriesPerPage)
+            ->orderBy($queryParams['orderby'] ?: 'p.crdate', $queryParams['order'] ?: 'DESC');
+
+
+            if (isset($queryParams['key'])) {
+                $query->andWhere(
+                    $queryBuilder->expr()->like(
+                        'p.slug',
+                        $queryBuilder->createNamedParameter('%' . $queryBuilder->escapeLikeWildcards($queryParams['key']) . '%')
+                    )
+                );
+                $query->orWhere(
+                    $queryBuilder->expr()->like(
+                        't.slug',
+                        $queryBuilder->createNamedParameter('%' . $queryBuilder->escapeLikeWildcards($queryParams['key']) . '%')
+                    )
+                );
+            }
+
+            if (isset($queryParams['status'])) {
+                if ($queryParams['status'] === 'visible') {
+                    $query->andWhere($queryBuilder->expr()->eq('p.deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
+                    $query->andWhere($queryBuilder->expr()->eq('p.hidden', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
+                }
+                if ($queryParams['status'] === 'deleted') {
+                    $query->andWhere($queryBuilder->expr()->eq('p.deleted', $queryBuilder->createNamedParameter(1, Connection::PARAM_INT)));
+                }
+                if ($queryParams['status'] === 'hidden') {
+                    $query->andWhere($queryBuilder->expr()->eq('p.hidden', $queryBuilder->createNamedParameter(1, Connection::PARAM_INT)));
+                }
+            }
+
+
+        $result = $query->executeQuery();
+
+        $pages = [];
+
+        while ($row = $result->fetchAssociative()) {
+            $uid = $row['uid'];
+
+            if (!isset($pages[$uid])) {
+                $site = $helper->getSiteByPageUid($uid);
+                $pages[$uid] = [
+                    'uid' => $uid,
+                    'title' => $row['title'],
+                    'nav_title' => $row['nav_title'],
+                    'slug' => $row['slug'],
+                    'sys_language_uid' => $row['sys_language_uid'],
+                    'l10n_parent' => $row['l10n_parent'],
+                    'crdate' => $row['crdate'],
+                    'deleted' => $row['deleted'],
+                    'hidden' => $row['hidden'],
+                    'site' => [
+                        'base' => rtrim($site['base'], '/') ?? '',
+                        'title' => $site['websiteTitle'] ?? '',
+                        'root' => $site['rootPageId'] ?? ''
+                    ],
+                    'translations' => []
+                ];
+            }
+
+            if (!empty($row['t_uid'])) {
+                //$t_site = $helper->getSiteByPageUid($uid);
+                //print_r($t_site);
+                $pages[$uid]['translations'][$row['t_sys_language_uid']] = [
+                    'uid' => $row['t_uid'],
+                    'title' => $row['t_title'],
+                    'nav_title' => $row['t_nav_title'],
+                    'slug' => $row['t_slug'],
+                    'sys_language_uid' => $row['t_sys_language_uid'],
+                    'base' => rtrim($site['languages'][$row['t_sys_language_uid']]['base'],'/') ?? ''
+                ];
+            }
+        }
+
+        return new JsonResponse(array_values($pages));
+    }
+
+    /**
+     * function ajaxList
+     */
+     /*
+    public function ajaxList(ServerRequestInterface $request): ResponseInterface
+    {
+
+        $helper = GeneralUtility::makeInstance(HelperUtility::class);
+        $output = [];
+        $queryParams = $request->getQueryParams();
+
+        //$currentPage = $queryParams['page'];
+        $entriesPerPage = $queryParams['maxentries'];
+        $totalRecords = $helper->getTotalRecords($queryParams['table']);
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($queryParams['table']);
+        $queryBuilder->getRestrictions()->removeAll();
+        $query = $queryBuilder
+            ->select('title','nav_title','slug','uid','sys_language_uid','l10n_parent','crdate','deleted','hidden')
             ->from($queryParams['table'])
             ->setMaxResults($entriesPerPage)
-            ->orderBy($queryParams['orderby'] ?: 'crdate',$queryParams['order'] ?: 'DESC');
-        if($queryParams['key']){
-            $query->where($queryBuilder->expr()->like('slug',$queryBuilder->createNamedParameter('%' . $queryBuilder->escapeLikeWildcards($queryParams['key']) . '%')));
-        }
-        $result = $query->execute();
+            ->orderBy($queryParams['orderby'] ?: 'crdate',$queryParams['order'] ?: 'DESC')
+            ->where(
+                $queryBuilder->expr()->eq('sys_language_uid', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
+            );
 
-        while ($row = $result->fetch()) {
-            $row['sitePrefix'] = $helper->getSitePrefix($row);
-            $row['site'] = $helper->getSiteByPageUid($row['uid']);
+        if(isset($queryParams['key'])){
+            $query->andWhere($queryBuilder->expr()->like('slug',$queryBuilder->createNamedParameter('%' . $queryBuilder->escapeLikeWildcards($queryParams['key']) . '%')));
+        }
+
+        if(isset($queryParams['status'])){
+            if($queryParams['status'] === 'visible') {
+                $query->andWhere($queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
+                $query->andWhere($queryBuilder->expr()->eq('hidden', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
+            }
+            if($queryParams['status'] === 'deleted') $query->andWhere($queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter(1, Connection::PARAM_INT)));
+            if($queryParams['status'] === 'hidden') $query->andWhere($queryBuilder->expr()->eq('hidden', $queryBuilder->createNamedParameter(1, Connection::PARAM_INT)));
+        }
+
+
+        $result = $query->executeQuery();
+
+        while ($row = $result->fetchAssociative()) {
+            $site = $helper->getSiteByPageUid($row['uid']);
+            $row['site']['base'] = $site['base'] ?? '';
+            $row['site']['title'] = $site['websiteTitle'] ?? '';
+            $row['site']['root'] = $site['rootPageId'] ?? '';
             $output[] = $row;
         }
         return new JsonResponse($output);
     }
-
+    */
 
     /**
      * function savePageSlug
@@ -70,7 +215,7 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($queryParams['uid'],\PDO::PARAM_INT))
             )
             ->set('slug',$slug) // Function "createNamedParameter" is NOT needed here!
-            ->execute();
+            ->executeQuery();
 
         if($statement){
             $responseInfo['status'] = '1';
@@ -103,7 +248,7 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
                 $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid,\PDO::PARAM_INT))
             )
             ->set($slugField,$slug) // Function "createNamedParameter" is NOT needed here!
-            ->execute();
+            ->executeQuery();
         $responseInfo['status'] = $statement;
         $responseInfo['slug'] = $slug;
         return new JsonResponse($responseInfo);
@@ -125,7 +270,7 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             ->where(
                 $queryBuilder->expr()->eq('slug', $queryBuilder->createNamedParameter($queryParams['slug']))
             )
-            ->execute()
+            ->executeQuery()
             ->fetchColumn(0);
         return new HtmlResponse($result);
     }
@@ -149,7 +294,7 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             ->where(
                 $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($queryParams['uid'],\PDO::PARAM_INT))
             )
-            ->execute();
+            ->executeQuery();
         while ($row = $statement->fetch()) {
             $slugGenerated = $slugHelper->generate($row, $row['pid']);
             break;
@@ -184,7 +329,7 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
             ->where(
                 $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($queryParams['uid'],\PDO::PARAM_INT))
             )
-            ->execute();
+            ->executeQuery();
         while ($row = $statement->fetch()) {
             $slugGenerated = $slugHelper->sanitize($row[$titleField]);
             break;
@@ -240,7 +385,7 @@ class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
     {
         $queryParams = $request->getQueryParams();
         $this->helper = GeneralUtility::makeInstance(HelperUtility::class);
-        $translations = $this->helper->getPageTranslationsByUid($queryParams['uid']);
+        //$translations = $this->helper->getPageTranslationsByUid($queryParams['uid']);
         $root = BackendUtility::getRecord('pages',$queryParams['uid']);
         $languages = $this->helper->getLanguages();
 

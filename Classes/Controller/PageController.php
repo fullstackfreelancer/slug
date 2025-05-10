@@ -1,6 +1,7 @@
 <?php
 namespace SIMONKOEHLER\Slug\Controller;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use SIMONKOEHLER\Slug\Utility\HelperUtility;
 use SIMONKOEHLER\Slug\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Imaging\Icon;
@@ -19,6 +20,7 @@ use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use \TYPO3\CMS\Backend\Template\Components\DocHeaderComponent;
 
 /*
  * This file was created by Simon Köhler
@@ -61,7 +63,7 @@ class PageController extends ActionController {
         $this->pageRepository = $pageRepository;
     }
 
-    public function initializeAction()
+    protected function initializeAction():void
     {
         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $this->helper = GeneralUtility::makeInstance(HelperUtility::class);
@@ -71,15 +73,31 @@ class PageController extends ActionController {
 
     protected function defaultRendering(): ResponseInterface
     {
-        $this->moduleTemplate->setContent($this->view->render());
-        return $this->htmlResponse($this->moduleTemplate->renderContent());
+        return $this->moduleTemplate->renderResponse('Page');
+        //return $this->htmlResponse($this->moduleTemplate->renderContent());
+    }
+
+    protected function initializeModuleTemplate(
+        ServerRequestInterface $request,
+    ): ModuleTemplate {
+        $view = $this->moduleTemplateFactory->create($request);
+
+        $context = '';
+        $view->setFlashMessageQueue($this->getFlashMessageQueue());
+        $view->setTitle(
+            'BANANA',
+            $context,
+        );
+
+        return $view;
     }
 
     protected function pageAction(): ResponseInterface
     {
         $pageUid = $this->request->getQueryParams()['id'];
         $pageData = $this->pageRepository->getPageData($pageUid);
-        $this->view->assignMultiple([
+        $view = $this->initializeModuleTemplate($this->request);
+        $view->assignMultiple([
             'backendConfiguration' => $this->backendConfiguration,
             'beLanguage' => $GLOBALS['BE_USER']->user['lang'],
             'extEmconf' => $this->helper->getEmConfiguration('slug'),
@@ -87,7 +105,7 @@ class PageController extends ActionController {
             'page' => $pageData,
             'translations' => []
         ]);
-        return $this->defaultRendering();
+        return $view->renderResponse('Page');
     }
 
     /**
@@ -144,8 +162,9 @@ class PageController extends ActionController {
             $slugpro = FALSE;
         }
 
+        $view = $this->initializeModuleTemplate($this->request);
         //Assign variables to the view
-        $this->view->assignMultiple([
+        $view->assignMultiple([
             'backendConfiguration' => $this->backendConfiguration,
             'beLanguage' => $GLOBALS['BE_USER']->user['lang'],
             'extEmconf' => $this->helper->getEmConfiguration('slug'),
@@ -158,7 +177,7 @@ class PageController extends ActionController {
         ]);
 
         //return $this->htmlResponse('Hello');
-        return $this->defaultRendering();
+        return $view->renderResponse('List');
     }
 
     /**

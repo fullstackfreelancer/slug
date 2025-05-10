@@ -16,10 +16,11 @@ document.addEventListener("DOMContentLoaded", function() {
         for (var i = 0; i < records.length; i++) {
             let title = records[i][titleField];
             let slug = records[i][slugField];
-            let sitePrefix = records[i]['sitePrefix'];
+            let sitePrefix = records[i]?.site?.base ? records[i].site.base : '';
             let fullUrl = sitePrefix + slug;
             let disabledAttribute = records[i]['tx_slug_locked'] ? 'disabled' : '';
-            output += '<div id="record-'+records[i]['uid']+'" data-siteprefix="'+sitePrefix+'" data-record="'+records[i]['uid']+'" class="slug-record row mb-2 border-bottom">';
+
+            output += '<div id="record-'+records[i]['uid']+'" data-siteprefix="'+sitePrefix+'" data-record="'+records[i]['uid']+'" class="slug-record row mb-2 shadow shadow-sm">';
             output += '<div class="col py-1">';
                 output += '<div>';
                 output += '<h5 class="slug-title"><i class="bi bi-'+slugHelper.getPageIconByType(records[i]['doktype'],records[i]['is_siteroot'])+' fa-fw" title="id='+records[i]['uid']+'"></i> '+title+'</h5>';
@@ -27,18 +28,46 @@ document.addEventListener("DOMContentLoaded", function() {
                 output += '</div>';
             output += '</div>';
             output += '<div class="col py-1">';
-                output += '<div class="input-group"><span class="input-group-addon">'+records[i]['sys_language_uid']+'</span><input type="text" class="form-control slug-input" value="'+slug+'" '+disabledAttribute+'/></div>';
+                output += '<div class="input-group"><span class="input-group-text">'+records[i]['sys_language_uid']+'</span><input type="text" class="form-control slug-input" value="'+slug+'" '+disabledAttribute+'/></div>';
             output += '</div>';
             output += '<div class="col-sm-2 py-1 d-flex justify-content-end">';
                 if(records[i]['tx_slug_locked'] === 1){
-                    output += '<div class="button-group ml-auto"><a class="btn btn-danger btn-sm" title="locked"><i class="bi bi-lock"></i></a><a class="btn btn-default btn-sm btn-info"><i class="bi bi-info-circle"></i></a></div>';
+                    output += '<div class="button-group ms-auto"><a class="btn btn-danger" title="locked"><i class="bi bi-lock"></i></a><a class="btn btn-default btn-info"><i class="bi bi-info-circle"></i></a></div>';
                 }
                 else{
-                    output += '<div class="button-group ml-auto"><a class="btn btn-default btn-sm btn-save"><i class="bi bi-save"></i></a><a class="btn btn-default btn-sm btn-generate"><i class="bi bi-arrow-repeat"></i></a><a class="btn btn-default btn-sm btn-info"><i class="bi bi-info-circle"></i></a></div>';
+                    output += '<div class="button-group ms-auto"><a class="btn btn-default btn-save"><i class="bi bi-save"></i></a><a class="btn btn-default btn-generate"><i class="bi bi-arrow-repeat"></i></a><a class="btn btn-default btn-info"><i class="bi bi-info-circle"></i></a></div>';
                 }
             output += '</div>';
             output += '<div class="info-container"></div>';
             output += '</div>';
+
+            console.log(records[i]['translations'])
+
+            if(records[i]['translations']){
+                 Object.values(records[i]['translations']).forEach((trecord,i) => {
+                    let fullUrl_trecord = sitePrefix + trecord['base'] + ''+ trecord[slugField];
+                    output += '<div class="slug-record row mb-2 shadow shadow-sm">';
+                        output += '<div class="col py-1">';
+                            output += '<div class="ps-4">';
+                            output += '<h5 class="slug-title"><i class="bi bi-'+slugHelper.getPageIconByType(records[i]['doktype'],records[i]['is_siteroot'])+' fa-fw" title="id='+records[i]['uid']+'"></i> '+trecord['title']+'</h5>';
+                            output += '<a href="'+fullUrl_trecord+'" target="_blank" class="slug-preview">'+ fullUrl_trecord + '</a>';
+                            output += '</div>';
+                        output += '</div>';
+                        output += '<div class="col py-1">';
+                            output += '<div class="input-group"><span class="input-group-text">'+trecord['sys_language_uid']+'</span><input type="text" class="form-control slug-input" value="'+trecord[slugField]+'" '+disabledAttribute+'/></div>';
+                        output += '</div>';
+                        output += '<div class="col-sm-2 py-1 d-flex justify-content-end">';
+                            if(records[i]['tx_slug_locked'] === 1){
+                                output += '<div class="button-group ms-auto"><a class="btn btn-danger" title="locked"><i class="bi bi-lock"></i></a><a class="btn btn-default btn-info"><i class="bi bi-info-circle"></i></a></div>';
+                            }
+                            else{
+                                output += '<div class="button-group ms-auto"><a class="btn btn-default btn-save"><i class="bi bi-save"></i></a><a class="btn btn-default btn-generate"><i class="bi bi-arrow-repeat"></i></a><a class="btn btn-default btn-info"><i class="bi bi-info-circle"></i></a></div>';
+                            }
+                        output += '</div>';
+                    output += '</div>';
+                });
+            }
+
         }
         target.innerHTML = output + '</div>';
         initInterface();

@@ -72,7 +72,7 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
         }
 
         $sitefinder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(SiteFinder::class);
-        $statement = $query->execute();
+        $statement = $query->executeQuery();
         $output = array();
 
         while ($row = $statement->fetch()) {
@@ -143,7 +143,7 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
         $statement = $queryBuilder
             ->select('*')
             ->from('sys_language')
-            ->execute();
+            ->executeQuery();
         $output = array();
         while ($row = $statement->fetch()) {
             array_push($output, $row);
@@ -172,7 +172,7 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
             ->where(
                 $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($pageUid))
             )
-            ->execute();
+            ->executeQuery();
         $row = $result->fetchAssociative();
         return $row;
     }

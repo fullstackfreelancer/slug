@@ -24,7 +24,7 @@
                 <h6>{f:translate(key:'filter.form.label.order_by', extensionName: slug)}</h6>
                 <select class="form-select" id="filter_orderby">
                     <f:for each="{filterOptions.orderby}" as="entry">
-                        <option value="{entry.value}">{entry.label}</option>
+                        <option value="p.{entry.value}">{entry.label}</option>
                     </f:for>
                 </select>
             </div>

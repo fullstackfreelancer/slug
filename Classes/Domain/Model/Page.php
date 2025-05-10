@@ -3,7 +3,7 @@ namespace SIMONKOEHLER\Slug\Domain\Model;
 
 /*
  * This file was created by Simon Köhler
- * https://simonkoehler.com
+ * https://kohlercode.com
  */
 
 class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
@@ -14,9 +14,9 @@ class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
     protected $title;
 
     /**
-    * @var integer
+    * @var int
     */
-    protected $uid;
+    protected ?int $uid;
 
     /**
     * @var integer

@@ -47,7 +47,7 @@ class ExtensionController extends ActionController {
         $this->extensionRepository = $extensionRepository;
     }
 
-    public function initializeAction()
+    protected function initializeAction():void
     {
         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $this->helper = GeneralUtility::makeInstance(HelperUtility::class);

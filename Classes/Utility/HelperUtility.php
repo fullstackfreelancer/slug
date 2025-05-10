@@ -33,37 +33,6 @@ class HelperUtility {
     }
 
     // Finds and returns the base URL of the website
-    public function getSitePrefix($pageData){
-
-        $output = '';
-        $sitefinder = GeneralUtility::makeInstance(SiteFinder::class);
-
-        try {
-            $site = $sitefinder->getSiteByPageId($pageData['uid']);
-            $siteConf = $site->getConfiguration();
-
-            $output = $siteConf['base'];
-
-            // Remove slash from base URL if neccessary
-            if(substr($siteConf['base'], -1) === "/"){
-                $output = substr($siteConf['base'], 0, -1);
-            }
-            else{
-                $output = $siteConf['base'];
-            }
-
-            // if($row['isocode']){
-            //     $output = $output.'/'.$pageData['isocode'];
-            // }
-        }
-        catch (SiteNotFoundException $e) {
-           $output = '[no site]';
-        }
-
-        return $output;
-    }
-
-    // Finds and returns the base URL of the website
     public function getSiteByPageUid($pageUid){
         $sitefinder = GeneralUtility::makeInstance(SiteFinder::class);
         try {
@@ -131,7 +100,7 @@ class HelperUtility {
             ->where(
                 $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT))
              )
-            ->execute();
+            ->executeQuery();
         $output = array();
         while ($row = $statement->fetch()) {
             array_push($output, $row);
@@ -153,7 +122,7 @@ class HelperUtility {
             ->where(
                 $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid,\PDO::PARAM_INT))
             )
-            ->execute();
+            ->executeQuery();
         $output = array();
         while ($row = $statement->fetch()) {
             $output = $row;
@@ -206,7 +175,7 @@ class HelperUtility {
         $count = $queryBuilder
            ->count('uid')
            ->from($table)
-           ->execute()
+           ->executeQuery()
            ->fetchOne();
         return $count;
     }

@@ -6,7 +6,7 @@
     "license": "GPL-3.0",
     "require": {
         "php": ">=8.0.0",
-        "typo3/cms-core": "^9.5 || ^10.4 || ^12.5"
+        "typo3/cms-core": "^13.4"
     },
     "keywords": [
         "TYPO3",
@@ -20,11 +20,11 @@
         "tool",
         "plugin"
     ],
-    "homepage": "https://simonkoehler.com/",
+    "homepage": "https://kohlercode.com/",
     "authors": [
         {
             "name": "Simon Köhler",
-            "email": "info@simonkoehler.com"
+            "email": "simon@kohlercode.com"
         }
     ],
     "autoload": {

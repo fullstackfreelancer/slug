@@ -3,7 +3,7 @@ use SIMONKOEHLER\Slug\Controller;
 
 /*
  * This file was created by Simon Köhler
- * https://simon-koehler.com
+ * https://kohlercode.com
  */
 
 return [
