@@ -1,13 +1,13 @@
-# ![](https://github.com/koehlersimon/slug/blob/master/ext_icon.svg?raw=true) slug - TYPO3 CMS Backend Module for faster SEO
+# ![](https://github.com/koehlersimon/slug/blob/master/ext_icon.svg?raw=true) slug - TYPO3 CMS Backend Module for better SEO
 
-Official Repository of the 'slug' Backend Module for TYPO3 9.5, 10 and soon 12.4.0
+Official Repository of the 'slug' Backend Module for TYPO3 9.5, 10, 11, 12 and soon 13.4.0
 
 The Slug backend module is designed to help manage large amounts of URL-slugs for pages and extension records. Currently, it provides a simple list for pages and custom records, which can be filtered with different parameters. Slugs can be edited and saved quickly and efficiently. The modules regenerate or save **all slugs of the current list view** with just one click. I have tested the functionality with 500 empty news records so far, without any problem.
 
 ## VERSION 5.0.0 COMING SOON
 
 If you like the slug extension, please consider to donate and help speed up the development.
-Your ideas to improve and extend the slug module are more than welcome: [send a message](https//simonkoehler.com/contact)
+Your ideas to improve and extend the slug module are more than welcome: [send a message](https//kohlercode.com/contact)
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/fullstackfreelancer/25)
 
@@ -95,4 +95,4 @@ https://github.com/fullstackfreelancer/slug/issues
 
 ## All other requests
 
-**Contact:** https://simonkoehler.com/contact
+**Contact:** https://kohlercode.com/contact
