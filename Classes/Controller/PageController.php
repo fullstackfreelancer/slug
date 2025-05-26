@@ -22,22 +22,76 @@ use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use \TYPO3\CMS\Backend\Template\Components\DocHeaderComponent;
 
-/*
- * This file was created by Simon Köhler
- * https://simonkoehler.com
+/**
+ * Controller for managing page-related backend actions in the Slug extension.
+ *
+ * Provides methods to render page views and listings,
+ * handles backend configuration and template initialization.
  */
-
 class PageController extends ActionController {
 
+    /**
+     * Current page ID from request.
+     *
+     * @var int
+     */
     protected int $id;
+
+    /**
+     * PageRenderer instance.
+     *
+     * @var \TYPO3\CMS\Core\Page\PageRenderer
+     */
     protected $pageRenderer;
+
+    /**
+     * IconFactory instance for icon rendering.
+     *
+     * @var IconFactory
+     */
     protected $iconFactory;
+
+    /**
+     * Helper utility instance.
+     *
+     * @var HelperUtility
+     */
     protected $helper;
+
+    /**
+     * Array of available languages.
+     *
+     * @var array
+     */
     protected $languages;
+
+    /**
+     * Array of site instances.
+     *
+     * @var array
+     */
     protected $sites;
+
+    /**
+     * Backend extension configuration.
+     *
+     * @var array
+     */
     protected $backendConfiguration;
+
+    /**
+     * Module template instance for backend rendering.
+     *
+     * @var ModuleTemplate|null
+     */
     protected ?ModuleTemplate $moduleTemplate = null;
 
+    /**
+     * Constructor.
+     *
+     * @param ModuleTemplateFactory $moduleTemplateFactory Factory to create backend module templates.
+     * @param PageRepository $pageRepository Repository for fetching page data.
+     */
     public function __construct(
         protected readonly ModuleTemplateFactory $moduleTemplateFactory,
         private PageRepository $pageRepository,
@@ -47,6 +101,13 @@ class PageController extends ActionController {
          $this->sites = GeneralUtility::makeInstance(SiteFinder::class)->getAllSites();
     }
 
+    /**
+     * Initialization routine before each action.
+     *
+     * Initializes icon factory, helper utility and module template.
+     *
+     * @return void
+     */
     protected function initializeAction():void
     {
         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
@@ -55,11 +116,24 @@ class PageController extends ActionController {
         $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
     }
 
+    /**
+     * Default rendering method.
+     *
+     * @return ResponseInterface Rendered response for the 'Page' template.
+     */
     protected function defaultRendering(): ResponseInterface
     {
         return $this->moduleTemplate->renderResponse('Page');
     }
 
+    /**
+     * Initializes the backend module template for a given request.
+     *
+     * Sets flash message queue and title.
+     *
+     * @param ServerRequestInterface $request Incoming PSR-7 request object.
+     * @return ModuleTemplate Initialized module template instance.
+     */
     protected function initializeModuleTemplate(
         ServerRequestInterface $request,
     ): ModuleTemplate {
@@ -75,6 +149,13 @@ class PageController extends ActionController {
         return $view;
     }
 
+    /**
+     * Action to display a single page and its translated children.
+     *
+     * Fetches page data by ID and passes it to the view.
+     *
+     * @return ResponseInterface Rendered response for the 'Page' template.
+     */
     protected function pageAction(): ResponseInterface
     {
         $pageUid = $this->request->getQueryParams()['id'];
@@ -90,7 +171,12 @@ class PageController extends ActionController {
     }
 
     /**
-     * Generate the List View
+     * Generates the list view of pages with filtering options.
+     *
+     * Provides various filter options, assigns necessary variables to the view,
+     * and renders the 'List' template.
+     *
+     * @return ResponseInterface Rendered response for the 'List' template.
      */
     protected function listAction(): ResponseInterface
     {
