@@ -48,7 +48,7 @@
 				<target>Alle speichern</target>
 			</trans-unit>
             <trans-unit id="button.saveall.title">
-				<target>Speichert alle aktuell eingegebenen Slugs ohne vorherige Prüfung!</target>
+				<target>Speichert bearbeitete Slugs der aktuellen Ansicht</target>
 			</trans-unit>
             <trans-unit id="button.generate.label">
 				<target>Slug generieren</target>
@@ -74,10 +74,16 @@
             <trans-unit id="button.news">
 				<target>News</target>
 			</trans-unit>
+            <trans-unit id="button.edit.page_properties">
+				<target>Seite bearbeiten</target>
+			</trans-unit>
+            <trans-unit id="button.edit.open_in_slug_page_module">
+				<target>Im Seitenmodul öffnen</target>
+			</trans-unit>
 
 
             <trans-unit id="siteselect.options.others">
-				<target>Andere Seiten im Root-Verzeichnis (Hinweis: Kommt mit der nächsten Version)</target>
+				<target>Andere Seiten im Root-Verzeichnis</target>
 			</trans-unit>
             <trans-unit id="siteselect.labels.site">
 				<target>Site:</target>
@@ -114,7 +120,7 @@
 
 
             <trans-unit id="filter.form.label.search_key">
-				<target>Suche nach Keyword/s in Slugs</target>
+				<target>Stichwortsuche</target>
 			</trans-unit>
             <trans-unit id="filter.form.label.entries_per_page">
 				<target>Anzahl Einträge</target>
@@ -161,6 +167,15 @@
 			</trans-unit>
             <trans-unit id="filter.form.select.option.ascending">
 				<target>Aufsteigend</target>
+			</trans-unit>
+            <trans-unit id="filter.form.select.option.all">
+				<target>alle</target>
+			</trans-unit>
+            <trans-unit id="filter.form.select.option.hidden">
+				<target>verborgene</target>
+			</trans-unit>
+            <trans-unit id="filter.form.select.option.visible">
+				<target>sichtbare</target>
 			</trans-unit>
 
 

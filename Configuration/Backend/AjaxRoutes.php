@@ -9,7 +9,7 @@ use SIMONKOEHLER\Slug\Controller;
 return [
     'slug_list' => [
         'path' => '/slug/list',
-        'target' => Controller\AjaxController::class . '::ajaxList'
+        'target' => Controller\AjaxController::class . '::listAction'
     ],
     'slug_save_page' => [
         'path' => '/slug/savePageSlug',
@@ -25,11 +25,11 @@ return [
     ],
     'slug_generate' => [
         'path' => '/slug/generatePageSlug',
-        'target' => Controller\AjaxController::class . '::generatePageSlug'
+        'target' => Controller\AjaxController::class . '::getPageSlug'
     ],
-    'slug_pageinfo' => [
-        'path' => '/slug/getPageInfo',
-        'target' => Controller\AjaxController::class . '::getPageInfo'
+    'slug_pagedata' => [
+        'path' => '/slug/getPageData',
+        'target' => Controller\AjaxController::class . '::getPageData'
     ],
     'slug_save_record' => [
         'path' => '/slug/saveRecordSlug',
@@ -42,5 +42,9 @@ return [
     'slug_tree_items' => [
         'path' => '/slug/loadTreeItemSlugs',
         'target' => Controller\AjaxController::class . '::loadTreeItemSlugs'
-    ]
+    ],
+    'slug_update_page_title' => [
+        'path' => '/slug/savePageTitle',
+        'target' => Controller\AjaxController::class . '::updatePageTitle'
+    ],
 ];

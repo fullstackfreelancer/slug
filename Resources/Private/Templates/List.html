@@ -8,9 +8,22 @@
 
 <f:section name="Content">
 
-    <f:flashMessages />
-    <f:render partial="GlobalHeader" arguments="{_all}"/>
-    <f:render partial="SlugFilterList" arguments="{_all}"/>
-    <div id="slug-list-wrap"></div>
+    <f:asset.script identifier="identifier123" priority="true" useNonce="true">
+    window.slugNotes = {};
+    window.slugNotes['notes.success.saved'] = "{f:translate(key:'notes.success.saved', extensionName: slug)}";
+    window.slugNotes['notes.success.generated'] = "{f:translate(key:'notes.success.generated', extensionName: slug)}";
+    window.slugNotes['notes.info.nochanges'] = "{f:translate(key:'notes.info.nochanges', extensionName: slug)}";
+    window.slugNotes['notes.info.slugexists'] = "{f:translate(key:'notes.info.slugexists', extensionName: slug)}";
+    window.slugNotes['notes.confirm.slashonly'] = "{f:translate(key:'notes.confirm.slashonly', extensionName: slug)}";
+    window.slugNotes['notes.error.noslug'] = "{f:translate(key:'notes.error.noslug', extensionName: slug)}";
+    window.slugNotes['notes.error.ajax'] = "{f:translate(key:'notes.error.ajax', extensionName: slug)}";
+    window.slugNotes['notes.generator.after_generating'] = "{f:translate(key:'notes.generator.after_generating', extensionName: slug)}";
+    </f:asset.script>
+
+    <div class="pt-3">
+        <f:flashMessages />
+        <f:render partial="SlugFilterList" arguments="{_all}"/>
+        <div class="container" id="slug-list-wrap">Loading...</div>
+    </div>
 
 </f:section>

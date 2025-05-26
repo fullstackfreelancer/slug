@@ -1,11 +1,6 @@
 <?php
 namespace SIMONKOEHLER\Slug\Domain\Model;
 
-/*
- * This file was created by Simon Köhler
- * https://kohlercode.com
- */
-
 class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
     /**

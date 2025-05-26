@@ -1,0 +1,108 @@
+{namespace be=TYPO3\CMS\Backend\ViewHelpers}
+
+<f:for each="{pages}" as="page">
+
+    <f:render section="entry" arguments="{page:page,indent:'ps-0'}"/>
+
+    <f:if condition="{page._translations}">
+        <f:for each="{page._translations}" as="page">
+            <f:render section="entry" arguments="{page:page,indent:'ps-0'}"/>
+        </f:for>
+    </f:if>
+
+    <f:if condition="{page._children}">
+        <f:for each="{page._children}" as="page">
+            <f:render section="entry" arguments="{page:page,indent:'ps-4'}"/>
+            <f:if condition="{page._translations}">
+                <f:for each="{page._translations}" as="page">
+                    <f:render section="entry" arguments="{page:page,indent:'ps-4'}"/>
+                </f:for>
+            </f:if>
+        </f:for>
+    </f:if>
+
+</f:for>
+
+<f:section name="entry">
+    <div id="record-{page.uid}" data-record="{page.uid}" data-siteprefix="{page.base}{page.base_language}" class="slug-record px-2 mb-2 shadow shadow-sm">
+        <div class="row">
+            <div class="col-lg-6 py-1">
+                <div class="d-flex">
+                    <div class="{indent}">
+                        <f:render section="title" arguments="{doktype:page.doktype, title:page.title, root:page.is_siteroot, uid:page.uid, hidden:page.hidden}"/>
+                        <a href="{page.base}{page.base_language}{page.slug}" target="_blank" class="slug-preview">{page.base}{page.base_language}{page.slug}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 py-1">
+                <div class="input-group">
+                    <span class="input-group-text"><core:icon identifier="flags-{page.flag}" size="small" title="{page.flag}"/></span>
+                    <input type="text" class="form-control slug-input" id="slug-input-field-{page.uid}" value="{page.slug}"/>
+                </div>
+            </div>
+            <div class="col-lg-2 py-1">
+                <div class="button-group ms-auto">
+                    <a class="btn btn-default btn-save"><core:icon identifier="actions-save" size="small" /></a>
+                    <a class="btn btn-default btn-generate"><core:icon identifier="actions-refresh" size="small" /></a>
+                    <div class="dropdown d-inline">
+                      <button class="btn btn-default dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                      <ul class="dropdown-menu" style="min-width:230px;">
+                          <li><be:link.editRecord uid="{page.uid}" table="pages" returnUrl="{f:be.uri(route: 'slug_list')}" class="dropdown-item"><i class="bi bi-pen"></i> {f:translate(key:'button.edit.page_properties', extensionName: 'slug')}</be:link.editRecord></li>
+                          <li><f:be.link route="slug_page" parameters="{id:page.uid}" class="dropdown-item"><i class="bi bi-pen"></i> {f:translate(key:'button.edit.open_in_slug_page_module', extensionName: 'slug')}</f:be.link></li>
+                          <li><a class="dropdown-item btn-info"><core:icon identifier="actions-info-circle" size="small" /> Info (experimental)</a></li>
+                      </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container"></div>
+    </div>
+</f:section>
+
+<f:section name="title">
+    <f:if condition="{hidden} === 1">
+        <f:variable name="overlay" value="overlay-hidden"/>
+    </f:if>
+    <f:if condition="{root} == 1">
+        <f:then>
+            <h5>
+                <core:icon identifier="apps-pagetree-folder-root" overlay="{overlay}" size="small" title="uid={uid}"/>
+                <span class="page-title" contenteditable="false" data-pageuid="{uid}" title="double click to edit">{title}</span>
+            </h5>
+        </f:then>
+        <f:else>
+            <f:switch expression="{doktype}">
+                <f:case value="254">
+                    <h5>
+                        <core:icon identifier="apps-pagetree-folder-default" overlay="{overlay}" size="small" title="uid={uid}"/>
+                        <span class="page-title" contenteditable="false" data-pageuid="{uid}" title="double click to edit">{title}</span>
+                    </h5>
+                </f:case>
+                <f:case value="6">
+                    <h5>
+                        <core:icon identifier="apps-pagetree-page-backend-users" overlay="{overlay}" size="small" title="uid={uid}"/>
+                        <span class="page-title" contenteditable="false" data-pageuid="{uid}" title="double click to edit">{title}</span>
+                    </h5>
+                </f:case>
+                <f:case value="3">
+                    <h5>
+                        <core:icon identifier="apps-pagetree-page-shortcut-external" overlay="{overlay}" size="small" title="uid={uid}"/>
+                        <span class="page-title" contenteditable="false" data-pageuid="{uid}" title="double click to edit">{title}</span>
+                    </h5>
+                </f:case>
+                <f:case value="4">
+                    <h5>
+                        <core:icon identifier="apps-pagetree-page-shortcut" overlay="{overlay}" size="small" title="uid={uid}"/>
+                        <span class="page-title" contenteditable="false" data-pageuid="{uid}" title="double click to edit">{title}</span>
+                    </h5>
+                </f:case>
+                <f:defaultCase>
+                    <h5>
+                        <core:icon identifier="apps-pagetree-page-default" overlay="{overlay}" size="small" title="uid={uid}"/>
+                        <span class="page-title" contenteditable="false" data-pageuid="{uid}" title="double click to edit">{title}</span>
+                    </h5>
+                </f:defaultCase>
+            </f:switch>
+        </f:else>
+    </f:if>
+</f:section>

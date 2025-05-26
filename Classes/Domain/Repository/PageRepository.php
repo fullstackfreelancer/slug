@@ -2,10 +2,13 @@
 namespace SIMONKOEHLER\Slug\Domain\Repository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
+use SIMONKOEHLER\Slug\Utility\HelperUtility;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use Psr\Http\Message\ServerRequestInterface;
 
 /*
  * This file was created by Simon Köhler
@@ -17,107 +20,16 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
     protected $table = 'pages';
     protected $fieldName = 'slug';
     protected $languages;
+    protected $sites;
+    protected $helper;
+    public $tree;
 
-
-    public function findAllFiltered($filterVariables) {
-        $this->languages = $this->getLanguages();
-        $queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)->getQueryBuilderForTable('pages');
-        $queryBuilder
-           ->getRestrictions()
-           ->removeAll();
-
-        $query = $queryBuilder
-            ->select('*')
-            ->from('pages')
-            ->setMaxResults($filterVariables['maxentries'])
-            ->setFirstResult($filterVariables['pointer'])
-            ->orderBy($filterVariables['orderby'],$filterVariables['order']);
-
-        switch ($filterVariables['status']) {
-
-            // All pages
-            case 'all':
-                // simply add nothing to the query...
-            break;
-
-            // Only hidden
-            case 'hidden':
-                $query->andWhere(
-                    $queryBuilder->expr()->eq('hidden', 1),
-                    $queryBuilder->expr()->eq('deleted', 0)
-                );
-            break;
-
-            // Only deleted
-            case 'deleted':
-                $query->where(
-                    $queryBuilder->expr()->eq('deleted', 1)
-                );
-            break;
-
-            // Only visible pages (default)
-            default:
-                $query->where(
-                    $queryBuilder->expr()->eq('hidden', 0),
-                    $queryBuilder->expr()->eq('deleted', 0),
-                    $queryBuilder->expr()->eq('doktype', 1)
-                );
-            break;
-        }
-
-        if($filterVariables['key']){
-            $query->andWhere(
-                $queryBuilder->expr()->like('slug',$queryBuilder->createNamedParameter('%' . $queryBuilder->escapeLikeWildcards($filterVariables['key']) . '%'))
-            );
-        }
-
-        $sitefinder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(SiteFinder::class);
-        $statement = $query->executeQuery();
-        $output = array();
-
-        while ($row = $statement->fetch()) {
-
-            $row['flag'] = $this->getLanguageValue('flag',$row['sys_language_uid']);
-            $row['isocode'] = $this->getLanguageValue('language_isocode',$row['sys_language_uid']);
-
-            // If page is a translated page, set l10n_parent as PageUid
-            if($row['l10n_parent'] > 0){
-                $pageUid = $row['l10n_parent'];
-            }
-            else{
-                $pageUid = $row['uid'];
-            }
-
-            // Try to get the Site configuration
-            try {
-                $site = $sitefinder->getSiteByPageId($pageUid);
-                $siteConf = $site->getConfiguration();
-
-                $row['site'] = $site;
-                $row['hasSite'] = true;
-
-                // Remove slash from base URL if neccessary
-                if(substr($siteConf['base'], -1) === "/"){
-                    $row['pageurl'] = substr($siteConf['base'], 0, -1);
-                }
-                else{
-                    $row['pageurl'] = $siteConf['base'];
-                }
-
-                if($row['isocode']){
-                    $row['pageurl'] = $row['pageurl'].'/'.$row['isocode'];
-                }
-            }
-            catch (SiteNotFoundException $e) {
-               $row['hasSite'] = false;
-               $row['pageurl'] = '(N/A)';
-            }
-
-            array_push($output, $row);
-
-        }
-        return $output;
+    public function __construct()
+    {
+        $this->sites = GeneralUtility::makeInstance(SiteFinder::class)->getAllSites();
+        $this->helper = GeneralUtility::makeInstance(HelperUtility::class);
     }
+
 
     function getLanguageValue($field,$uid){
         $output = '';
@@ -134,19 +46,6 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
             if($field === 'flag'){
                 $output = 'multiple';
             }
-        }
-        return $output;
-    }
-
-    public function getLanguages(){
-        $queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)->getQueryBuilderForTable('sys_language');
-        $statement = $queryBuilder
-            ->select('*')
-            ->from('sys_language')
-            ->executeQuery();
-        $output = array();
-        while ($row = $statement->fetch()) {
-            array_push($output, $row);
         }
         return $output;
     }
@@ -175,6 +74,219 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
             ->executeQuery();
         $row = $result->fetchAssociative();
         return $row;
+    }
+
+    public function getPageDataAndTranslatedChildren($pageUid)
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+        $queryBuilder->getRestrictions()->removeAll();
+
+        $queryBuilder
+            ->select('*')
+            ->from('pages')
+            ->orderBy('l10n_parent','ASC')
+            ->where(
+                $queryBuilder->expr()->or(
+                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($pageUid, Connection::PARAM_INT)),
+                    $queryBuilder->expr()->and(
+                        $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageUid, Connection::PARAM_INT)),
+                        $queryBuilder->expr()->gt('l10n_parent', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
+                    )
+                )
+            );
+
+        $stmt = $queryBuilder->executeQuery();
+        $pages = $stmt->fetchAllAssociative();
+
+        foreach($pages as $key => $page){
+            $site = $this->helper->getSiteByPageUid($page['uid']);
+            $pages[$key]['site'] = $site;
+
+            // Default: no language found
+            $pages[$key]['language'] = null;
+
+            if (!empty($site['languages']) && isset($page['sys_language_uid'])) {
+                foreach ($site['languages'] as $language) {
+                    if ((int)$language['languageId'] === (int)$page['sys_language_uid']) {
+                        $pages[$key]['language'] = $language;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $pages;
+    }
+
+    public function getTranslatedPages(int $pageUid): array
+    {
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('pages');
+
+        $queryBuilder = $connection->createQueryBuilder();
+
+        return $queryBuilder
+            ->select('*')
+            ->from('pages')
+            ->where(
+                $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageUid, Connection::PARAM_INT)),
+                $queryBuilder->expr()->eq('deleted', 0)
+            )
+            ->orderBy('sys_language_uid', 'ASC')
+            ->executeQuery()
+            ->fetchAllAssociative();
+    }
+
+
+    /**
+     * function getPageDataForList
+     */
+    public function getPageDataForList($maxitems = 10, $searchkey = '', $orderby = 'crdate', $order = 'ASC', $status = 'all')
+    {
+
+        $helper = GeneralUtility::makeInstance(HelperUtility::class);
+        $output = [];
+        $totalRecords = $helper->getTotalRecords('pages');
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+        $queryBuilder->getRestrictions()->removeAll();
+        $query = $queryBuilder
+            ->select(
+                'p.uid AS uid',
+                'p.title AS title',
+                'p.nav_title AS nav_title',
+                'p.slug AS slug',
+                'p.sys_language_uid AS sys_language_uid',
+                'p.l10n_parent AS l10n_parent',
+                'p.crdate AS crdate',
+                'p.deleted AS deleted',
+                'p.hidden AS hidden',
+                'p.doktype AS doktype',
+                'p.tstamp AS tstamp',
+                'p.seo_title AS seo_title',
+                'p.is_siteroot AS is_siteroot',
+                'p.tx_slug_locked AS tx_slug_locked',
+                't.uid AS t_uid',
+                't.title AS t_title',
+                't.nav_title AS t_nav_title',
+                't.slug AS t_slug',
+                't.sys_language_uid AS t_sys_language_uid'
+            )
+            ->from('pages', 'p')
+            ->leftJoin(
+                'p',
+                'pages',
+                't',
+                $queryBuilder->expr()->and(
+                    $queryBuilder->expr()->eq('t.l10n_parent', $queryBuilder->quoteIdentifier('p.uid')),
+                    $queryBuilder->expr()->gt('t.sys_language_uid', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
+                )
+            )
+            ->where(
+                $queryBuilder->expr()->eq('p.sys_language_uid', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
+            )
+            ->andWhere(
+                $queryBuilder->expr()->eq('p.tx_slug_locked', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
+            )
+            ->setMaxResults($maxitems)
+            ->orderBy($orderby ?: 'p.crdate', $order ?: 'DESC');
+
+
+            if (isset($searchkey)) {
+                $query->andWhere(
+                    $queryBuilder->expr()->like(
+                        'p.slug',
+                        $queryBuilder->createNamedParameter('%' . $queryBuilder->escapeLikeWildcards($searchkey) . '%')
+                    )
+                );
+                $query->orWhere(
+                    $queryBuilder->expr()->like(
+                        't.slug',
+                        $queryBuilder->createNamedParameter('%' . $queryBuilder->escapeLikeWildcards($searchkey) . '%')
+                    )
+                );
+            }
+
+            if ($status !== 'all') {
+                if ($status === 'visible') {
+                    $query->andWhere($queryBuilder->expr()->eq('p.deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
+                    $query->andWhere($queryBuilder->expr()->eq('p.hidden', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
+                }
+                if ($status === 'hidden') {
+                    $query->andWhere($queryBuilder->expr()->eq('p.hidden', $queryBuilder->createNamedParameter(1, Connection::PARAM_INT)));
+                    $query->andWhere($queryBuilder->expr()->eq('p.deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
+                }
+            }
+            else{
+                $query->andWhere($queryBuilder->expr()->eq('p.deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)));
+            }
+
+
+        $result = $query->executeQuery();
+
+        $pages = [];
+
+        while ($row = $result->fetchAssociative()) {
+            $uid = $row['uid'];
+
+            if (!isset($pages[$uid])) {
+                $site = $helper->getSiteByPageUid($uid);
+
+                // Check if page belongs to a site. Deleted pages are NOT assigned to a site
+                if($site){
+                    $flag = $site['languages'][$row['sys_language_uid']]['flag'];
+                    $base = rtrim($site['base'],'/');
+                    $base_language = rtrim($site['languages'][$row['sys_language_uid']]['base'],'/');
+                }
+
+                $pages[$uid] = [
+                    'uid' => $uid,
+                    'title' => $row['title'],
+                    'doktype' => $row['doktype'],
+                    'is_siteroot' => $row['is_siteroot'],
+                    'nav_title' => $row['nav_title'],
+                    'slug' => $row['slug'],
+                    'sys_language_uid' => $row['sys_language_uid'],
+                    'l10n_parent' => $row['l10n_parent'],
+                    'crdate' => $row['crdate'],
+                    'deleted' => $row['deleted'],
+                    'hidden' => $row['hidden'],
+                    'site' => $site,
+                    'flag' => $flag ?? '',
+                    'translations' => [],
+                    'base' => $base ?? '',
+                    'base_language' => $base_language ?? ''
+                ];
+            }
+
+            if (!empty($row['t_uid'])) {
+                $pages[$uid]['_translations'][$row['t_sys_language_uid']] = [
+                    'uid' => $row['t_uid'],
+                    'title' => $row['t_title'],
+                    'nav_title' => $row['t_nav_title'],
+                    'slug' => $row['t_slug'],
+                    'sys_language_uid' => $row['t_sys_language_uid'],
+                    'l10n_parent' => $row['l10n_parent'],
+                    'flag' => $site['languages'][$row['t_sys_language_uid']]['flag'],
+                    'base' => rtrim($site['base'],'/') ?? '',
+                    'base_language' => rtrim($site['languages'][$row['t_sys_language_uid']]['base'],'/') ?? ''
+                ];
+            }
+        }
+
+        return $pages;
+    }
+
+    public function updatePageTitle($title,$pageUid)
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+        $queryBuilder
+            ->update('pages')
+            ->where(
+                $queryBuilder->expr()->eq('uid', $pageUid)
+            )
+            ->set('title', $title)
+            ->executeQuery();
     }
 
 }

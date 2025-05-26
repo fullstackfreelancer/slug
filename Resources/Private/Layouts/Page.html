@@ -13,12 +13,9 @@
       }"
       />
 
-<f:asset.css identifier="slug" href="EXT:slug/Resources/Public/Css/Backend.css"/>
-<f:asset.css identifier="slug_icons" href="EXT:slug/Resources/Public/Libs/bootstrap-icons/font/bootstrap-icons.min.css"/>
-
     <section id="typo3-inner-docbody">
+        <f:render partial="DocHeader" arguments="{_all}"/>
         <f:flashMessages />
-        PAGE TLAYOUT
         <f:render section="Content" />
         <f:render partial="ModuleFooter" />
     </section>

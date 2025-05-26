@@ -1,121 +1,95 @@
-document.addEventListener("DOMContentLoaded", function() {
+import AjaxRequest from "@typo3/core/ajax/ajax-request.js";
+import { SlugHelper } from '@simonkoehler/slug/Classes/SlugHelper.js';
 
-    let titleField = 'title'
-    let slugField = 'slug'
-    let recordTable = 'pages'
+console.log('ListController.js works!')
 
-    const slugHelper = new SlugHelper()
-          slugHelper.initFilterFields(buildHTML,recordTable)
-          slugHelper.loadList(recordTable,titleField,slugField,0,null,buildHTML)
+let titleField = 'title'
+let slugField = 'slug'
+let recordTable = 'pages'
 
-    function buildHTML(records){
+SlugHelper.initFilterFields(loadHTML,recordTable)
+SlugHelper.loadList(recordTable,titleField,slugField,0,null,loadHTML)
 
-        let target = document.getElementById('slug-list-wrap');
-        let output = '<div class="container">';
+function loadHTML(responseText) {
+    document.getElementById('slug-list-wrap').innerHTML = responseText;
+    initInterface();
+}
 
-        for (var i = 0; i < records.length; i++) {
-            let title = records[i][titleField];
-            let slug = records[i][slugField];
-            let sitePrefix = records[i]?.site?.base ? records[i].site.base : '';
-            let fullUrl = sitePrefix + slug;
-            let disabledAttribute = records[i]['tx_slug_locked'] ? 'disabled' : '';
+function initInterface(){
+    const rows = document.querySelectorAll('.slug-record');
+    const button_generate_all = document.getElementById('btn-generate-all');
+    const button_save_all = document.getElementById('btn-save-all');
+    rows.forEach((row, i) => {
+        const slug_input = row.querySelector('.slug-input');
+        const slug_preview = row.querySelector('.slug-preview');
+        const button_save = row.querySelector('.btn-save');
+        const button_generate = row.querySelector('.btn-generate');
+        const button_info = row.querySelector('.btn-info');
+        const uid = row.getAttribute('data-record');
+        const sitePrefix = row.getAttribute('data-siteprefix');
+        const page_title = row.querySelector('.page-title');
 
-            output += '<div id="record-'+records[i]['uid']+'" data-siteprefix="'+sitePrefix+'" data-record="'+records[i]['uid']+'" class="slug-record row mb-2 shadow shadow-sm">';
-            output += '<div class="col py-1">';
-                output += '<div>';
-                output += '<h5 class="slug-title"><i class="bi bi-'+slugHelper.getPageIconByType(records[i]['doktype'],records[i]['is_siteroot'])+' fa-fw" title="id='+records[i]['uid']+'"></i> '+title+'</h5>';
-                output += '<a href="'+fullUrl+'" target="_blank" class="slug-preview">'+ fullUrl + '</a>';
-                output += '</div>';
-            output += '</div>';
-            output += '<div class="col py-1">';
-                output += '<div class="input-group"><span class="input-group-text">'+records[i]['sys_language_uid']+'</span><input type="text" class="form-control slug-input" value="'+slug+'" '+disabledAttribute+'/></div>';
-            output += '</div>';
-            output += '<div class="col-sm-2 py-1 d-flex justify-content-end">';
-                if(records[i]['tx_slug_locked'] === 1){
-                    output += '<div class="button-group ms-auto"><a class="btn btn-danger" title="locked"><i class="bi bi-lock"></i></a><a class="btn btn-default btn-info"><i class="bi bi-info-circle"></i></a></div>';
-                }
-                else{
-                    output += '<div class="button-group ms-auto"><a class="btn btn-default btn-save"><i class="bi bi-save"></i></a><a class="btn btn-default btn-generate"><i class="bi bi-arrow-repeat"></i></a><a class="btn btn-default btn-info"><i class="bi bi-info-circle"></i></a></div>';
-                }
-            output += '</div>';
-            output += '<div class="info-container"></div>';
-            output += '</div>';
-
-            console.log(records[i]['translations'])
-
-            if(records[i]['translations']){
-                 Object.values(records[i]['translations']).forEach((trecord,i) => {
-                    let fullUrl_trecord = sitePrefix + trecord['base'] + ''+ trecord[slugField];
-                    output += '<div class="slug-record row mb-2 shadow shadow-sm">';
-                        output += '<div class="col py-1">';
-                            output += '<div class="ps-4">';
-                            output += '<h5 class="slug-title"><i class="bi bi-'+slugHelper.getPageIconByType(records[i]['doktype'],records[i]['is_siteroot'])+' fa-fw" title="id='+records[i]['uid']+'"></i> '+trecord['title']+'</h5>';
-                            output += '<a href="'+fullUrl_trecord+'" target="_blank" class="slug-preview">'+ fullUrl_trecord + '</a>';
-                            output += '</div>';
-                        output += '</div>';
-                        output += '<div class="col py-1">';
-                            output += '<div class="input-group"><span class="input-group-text">'+trecord['sys_language_uid']+'</span><input type="text" class="form-control slug-input" value="'+trecord[slugField]+'" '+disabledAttribute+'/></div>';
-                        output += '</div>';
-                        output += '<div class="col-sm-2 py-1 d-flex justify-content-end">';
-                            if(records[i]['tx_slug_locked'] === 1){
-                                output += '<div class="button-group ms-auto"><a class="btn btn-danger" title="locked"><i class="bi bi-lock"></i></a><a class="btn btn-default btn-info"><i class="bi bi-info-circle"></i></a></div>';
-                            }
-                            else{
-                                output += '<div class="button-group ms-auto"><a class="btn btn-default btn-save"><i class="bi bi-save"></i></a><a class="btn btn-default btn-generate"><i class="bi bi-arrow-repeat"></i></a><a class="btn btn-default btn-info"><i class="bi bi-info-circle"></i></a></div>';
-                            }
-                        output += '</div>';
-                    output += '</div>';
-                });
-            }
-
-        }
-        target.innerHTML = output + '</div>';
-        initInterface();
-    }
-
-    function initInterface(){
-        let rows = document.querySelectorAll('.slug-record');
-        rows.forEach((row, i) => {
-            let slug_input = row.querySelector('.slug-input');
-            let slug_preview = row.querySelector('.slug-preview');
-            let button_save = row.querySelector('.btn-save');
-            let button_generate = row.querySelector('.btn-generate');
-            let button_info = row.querySelector('.btn-info');
-            let uid = row.getAttribute('data-record');
-            let sitePrefix = row.getAttribute('data-siteprefix');
-
-            if(button_save){
-                button_save.addEventListener('click',function(e){
-                    let slug = row.querySelector('input[type="text"]').value;
-                    slugHelper.save(uid,slug,sitePrefix,'page');
-                });
-            }
-
-            if(button_generate){
-                button_generate.addEventListener('click',function(e){
-                    slugHelper.generate(uid,sitePrefix,'page');
-                });
-            }
-
-            if(button_info){
-                button_info.addEventListener('click',function(e){
-                    slugHelper.slugInfo(uid,'page');
-                });
-            }
-
-            if(slug_input){
-                slug_input.addEventListener('input',function(e){
-                    slug_preview.innerHTML = sitePrefix + slug_input.value;
-                    slugHelper.updateGooglePreviewUrl(sitePrefix + slug_input.value,uid);
-                });
-            }
-
-            // Find PRO Scripts and initialize functions
-            if(typeof SLUGPRO !== 'undefined'){
-                SLUGPRO.makeSlugTitlesEditable();
-            }
-
+        page_title.addEventListener('dblclick', function () {
+            page_title.setAttribute('contenteditable', 'true');
+            page_title.setAttribute('data-originaltext',page_title.textContent);
+            page_title.focus();
         });
-    }
 
-});
+        page_title.addEventListener('blur', function(){
+            const newText = page_title.textContent.trim();
+            page_title.setAttribute('contenteditable', 'false');
+            SlugHelper.updatePageTitle(page_title);
+        });
+
+        if(button_save){
+            button_save.addEventListener('click',function(e){
+                const slug = row.querySelector('input[type="text"]').value;
+                SlugHelper.saveSlug(uid,slug,sitePrefix,'page');
+            });
+        }
+
+        if(button_generate){
+            button_generate.addEventListener('click',function(e){
+                SlugHelper.generateSlug(uid,sitePrefix,'page');
+            });
+        }
+
+        if(button_info){
+            button_info.addEventListener('click',function(e){
+                SlugHelper.loadSlugInfo(uid,'page');
+                console.log('INFO CLICKED!')
+            });
+        }
+
+        if(slug_input){
+            slug_input.addEventListener('input',function(e){
+                slug_preview.innerHTML = sitePrefix + slug_input.value;
+                SlugHelper.updateGooglePreviewUrl(sitePrefix + slug_input.value,uid);
+            });
+        }
+
+        // Find PRO Scripts and initialize functions
+        if(typeof SLUGPRO !== 'undefined'){
+            SLUGPRO.makeSlugTitlesEditable();
+        }
+
+    });
+
+    document.querySelectorAll('.slug-input').forEach(input => {
+        input.addEventListener('input', function() {
+            const row = this.closest('[id^="record-"]');
+            if (row) {
+                row.classList.add('not-saved');
+            }
+        });
+    });
+
+    button_save_all.addEventListener('click',function(e){
+        SlugHelper.saveAllSlugs();
+        console.log('SAVE ALL FUCK!')
+    });
+
+    button_generate_all.addEventListener('click',function(e){
+
+    });
+}

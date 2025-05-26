@@ -1,13 +1,14 @@
 <div id="slug-filter-list">
     <div class="container">
+
         <div class="row g-2">
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <h6>{f:translate(key:'filter.form.label.search_key', extensionName: slug)}</h6>
-                <input type="text" id="filter_key" class="form-control"/>
+                <input type="text" id="filter_key" class="form-control form-control-sm"/>
             </div>
             <div class="col-sm-2">
                 <h6>{f:translate(key:'filter.form.label.entries_per_page', extensionName: slug)}</h6>
-                <select class="form-select" id="filter_maxentries">
+                <select class="form-select form-select-sm" id="filter_maxentries">
                     <f:for each="{filterOptions.maxentries}" as="entry">
                         <f:if condition="{backendConfiguration.defaultMaxEntries} == {entry.value}">
                             <f:then>
@@ -22,7 +23,7 @@
             </div>
             <div class="col-sm-2">
                 <h6>{f:translate(key:'filter.form.label.order_by', extensionName: slug)}</h6>
-                <select class="form-select" id="filter_orderby">
+                <select class="form-select form-select-sm" id="filter_orderby">
                     <f:for each="{filterOptions.orderby}" as="entry">
                         <option value="p.{entry.value}">{entry.label}</option>
                     </f:for>
@@ -30,34 +31,35 @@
             </div>
             <div class="col-sm-2">
                 <h6>{f:translate(key:'filter.form.label.order', extensionName: slug)}</h6>
-                <select class="form-select" id="filter_order">
+                <select class="form-select form-select-sm" id="filter_order">
                     <f:for each="{filterOptions.order}" as="entry">
                         <option value="{entry.value}">{entry.label}</option>
                     </f:for>
                 </select>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <h6>{f:translate(key:'filter.form.label.status', extensionName: slug)}</h6>
-                <f:form.select id="filter_status" value="{filter.status}" name="filter[status]" options="{visible:'visible pages',all:'all pages',hidden:'hidden pages',deleted:'deleted pages'}" class="form-select"/>
+                <select class="form-select form-select-sm" id="filter_status">
+                    <option value="all">{f:translate(key:'filter.form.select.option.all', extensionName: 'slug')}</option>
+                    <option value="visible" selected>{f:translate(key:'filter.form.select.option.visible', extensionName: 'slug')}</option>
+                    <option value="hidden">{f:translate(key:'filter.form.select.option.hidden', extensionName: 'slug')}</option>
+                </select>
+            </div>
+            <div class="col-2">
+                <h6>Actions</h6>
+                <div class="btn-group">
+                    <button class="btn btn-sm btn-default" id="btn-save-all" title="{f:translate(key:'button.saveall.title', extensionName: slug)}">
+                        <i class="bi bi-check"></i> {f:translate(key:'button.saveall.label', extensionName: slug)}
+                    </button>
+                    <button class="btn btn-sm btn-default" id="btn-generate-all" title="{f:translate(key:'button.generateall.title', extensionName: slug)}">
+                        <i class="bi bi-refresh"></i> {f:translate(key:'button.generateall.label', extensionName: slug)}
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div class="my-3">
-            <div class="row">
-                <div class="col-sm-6">
-                    <span class="record-count" title="Number of records in the current view"></span> of {totalPages}
-                </div>
-                <div class="col-sm-6 d-flex justify-content-end">
-                    <div class="btn-group">
-                        <button class="btn btn-default saveAllPageSlugs" title="{f:translate(key:'button.saveall.title', extensionName: slug)}">
-                            <i class="bi bi-check"></i> {f:translate(key:'button.saveall.label', extensionName: slug)}
-                        </button>
-                        <button class="btn btn-default generateAllPageSlugs" title="{f:translate(key:'button.generateall.title', extensionName: slug)}">
-                            <i class="bi bi-refresh"></i> {f:translate(key:'button.generateall.label', extensionName: slug)}
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div class="my-3 d-flex justify-content-end">
+            <div id="slug-status"></div>
         </div>
 
     </div>

@@ -7,10 +7,15 @@
 
     <f:asset.css identifier="slug" href="EXT:slug/Resources/Public/Css/Backend.css"/>
     <f:asset.css identifier="slug_icons" href="EXT:slug/Resources/Public/Libs/bootstrap-icons/font/bootstrap-icons.min.css"/>
-    <f:asset.script identifier="slug_helper_class" src="EXT:slug/Resources/Public/JavaScript/Classes/SlugHelper.js"/>
-    <f:asset.script identifier="slug_list_controller" src="EXT:slug/Resources/Public/JavaScript/ListController.js"/>
+
+    <f:be.pageRenderer includeJavaScriptModules="{
+         0: '@simonkoehler/slug/Classes/SlugHelper.js',
+         1: '@simonkoehler/slug/ListController.js'
+      }"
+      />
 
     <section id="typo3-inner-docbody">
+        <f:render partial="DocHeader" arguments="{_all}"/>
         <f:flashMessages />
         <f:render section="Content" />
         <f:render partial="ModuleFooter" />

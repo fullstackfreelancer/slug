@@ -6,15 +6,26 @@ use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use TYPO3\CMS\Core\DataHandling\Model\RecordState;
 use TYPO3\CMS\Core\DataHandling\Model\RecordStateFactory;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-
-/*
- * This file was created by Simon Köhler
- * https://simon-koehler.com
- */
+use TYPO3\CMS\Core\View\ViewFactoryData;
+use TYPO3\CMS\Core\View\ViewFactoryInterface;
 
 class HelperUtility {
 
+
+    public function createViewAndTemplatePaths($templateName,$request){
+        $viewFactory = GeneralUtility::makeInstance(ViewFactoryInterface::class);
+        $viewFactoryData = new ViewFactoryData(
+            templateRootPaths: ['EXT:slug/Resources/Private/Templates','EXT:slugpro/Resources/Private/Templates'],
+            partialRootPaths: ['EXT:slug/Resources/Private/Partials','EXT:slugpro/Resources/Private/Partials'],
+            layoutRootPaths: ['EXT:slug/Resources/Private/Layouts','EXT:slugpro/Resources/Private/Layouts'],
+            request: $request,
+        );
+        $view = $viewFactory->create($viewFactoryData);
+        $view->setTemplate($templateName);
+        return $view;
+    }
 
     // Get Extension Manager configuration from the ext_emconf.php of any extension
     public function getEmConfiguration($extKey) {
@@ -40,7 +51,7 @@ class HelperUtility {
             $output = $site->getConfiguration();
         }
         catch (SiteNotFoundException $e) {
-           $output = '[no site]';
+           $output = false;
         }
         return $output;
     }
@@ -76,6 +87,38 @@ class HelperUtility {
         return $output;
     }
 
+    public function returnUniqueSlug($type,$slug,$recordUid,$table,$slugField) {
+
+        switch ($type) {
+            case 'page':
+                $fieldConfig = $GLOBALS['TCA']['pages']['columns']['slug']['config'];
+                $slugHelper = GeneralUtility::makeInstance(SlugHelper::class, 'pages', 'slug', $fieldConfig);
+                $record = $this->getRecordForSlugBuilding($recordUid, 'pages');
+                $state = RecordStateFactory::forName('pages')->fromArray($record, $record['pid'], $recordUid);
+                $uniqueSlug = $slugHelper->buildSlugForUniqueInSite($slug, $state);
+                break;
+            case 'news':
+                $fieldConfig = $GLOBALS['TCA']['tx_news_domain_model_news']['columns']['path_segment']['config'];
+                $slugHelper = GeneralUtility::makeInstance(SlugHelper::class, 'tx_news_domain_model_news', 'path_segment', $fieldConfig);
+                $record = $this->getRecordForSlugBuilding($recordUid, 'tx_news_domain_model_news');
+                $state = RecordStateFactory::forName('tx_news_domain_model_news')->fromArray($record, $record['pid'], $recordUid);
+                $uniqueSlug = $slugHelper->buildSlugForUniqueInSite($slug, $state);
+                break;
+            case 'record':
+                $fieldConfig = $GLOBALS['TCA'][$table]['columns'][$slugField]['config'];
+                $slugHelper = GeneralUtility::makeInstance(SlugHelper::class, $table, $slugField, $fieldConfig);
+                $record = $this->getRecordForSlugBuilding($recordUid, $table);
+                $state = RecordStateFactory::forName($table)->fromArray($record, $record['pid'], $recordUid);
+                $uniqueSlug = $slugHelper->buildSlugForUniqueInSite($slug, $state);
+                break;
+            default:
+                $uniqueSlug = 'url-'.time();
+                break;
+        }
+
+        return $uniqueSlug;
+
+    }
 
     public function getIsoCodeByLanguageUid($sys_language_uid) {
         foreach ($this->getLanguages() as $value) {
@@ -116,53 +159,37 @@ class HelperUtility {
 
     public function getRecordForSlugBuilding($uid,$table){
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
+        $queryBuilder->getRestrictions()->removeAll();
         $statement = $queryBuilder
             ->select('*')
             ->from($table)
             ->where(
-                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid,\PDO::PARAM_INT))
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid,Connection::PARAM_INT))
             )
             ->executeQuery();
         $output = array();
-        while ($row = $statement->fetch()) {
+        while ($row = $statement->fetchAssociative()) {
             $output = $row;
             break;
         }
         return $output;
     }
 
-
-    public function returnUniqueSlug($type,$slug,$recordUid,$table,$slugField) {
-
-        switch ($type) {
-            case 'page':
-                $fieldConfig = $GLOBALS['TCA']['pages']['columns']['slug']['config'];
-                $slugHelper = GeneralUtility::makeInstance(SlugHelper::class, 'pages', 'slug', $fieldConfig);
-                $record = $this->getRecordForSlugBuilding($recordUid, 'pages');
-                $state = RecordStateFactory::forName('pages')->fromArray($record, $record['pid'], $recordUid);
-                $uniqueSlug = $slugHelper->buildSlugForUniqueInSite($slug, $state);
-                break;
-            case 'news':
-                $fieldConfig = $GLOBALS['TCA']['tx_news_domain_model_news']['columns']['path_segment']['config'];
-                $slugHelper = GeneralUtility::makeInstance(SlugHelper::class, 'tx_news_domain_model_news', 'path_segment', $fieldConfig);
-                $record = $this->getRecordForSlugBuilding($recordUid, 'tx_news_domain_model_news');
-                $state = RecordStateFactory::forName('tx_news_domain_model_news')->fromArray($record, $record['pid'], $recordUid);
-                $uniqueSlug = $slugHelper->buildSlugForUniqueInSite($slug, $state);
-                break;
-            case 'record':
-                $fieldConfig = $GLOBALS['TCA'][$table]['columns'][$slugField]['config'];
-                $slugHelper = GeneralUtility::makeInstance(SlugHelper::class, $table, $slugField, $fieldConfig);
-                $record = $this->getRecordForSlugBuilding($recordUid, $table);
-                $state = RecordStateFactory::forName($table)->fromArray($record, $record['pid'], $recordUid);
-                $uniqueSlug = $slugHelper->buildSlugForUniqueInSite($slug, $state);
-                break;
-            default:
-                $uniqueSlug = 'url-'.time();
-                break;
-        }
-
-        return $uniqueSlug;
-
+    public function generatePageSlug($pageUid,$fieldConfig){
+        $slugHelper = GeneralUtility::makeInstance(SlugHelper::class, 'pages', 'slug', $fieldConfig);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+        $queryBuilder->getRestrictions()->removeAll();
+        $statement = $queryBuilder
+            ->select('*')
+            ->from('pages')
+            ->setMaxResults(1)
+            ->where(
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($pageUid,Connection::PARAM_INT))
+            )
+            ->executeQuery();
+        $record = $statement->fetchAssociative();
+        $slugGenerated = $slugHelper->generate($record, $record['pid']);
+        return $slugGenerated;
     }
 
     /**

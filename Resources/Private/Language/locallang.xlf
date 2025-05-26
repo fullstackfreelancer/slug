@@ -77,6 +77,12 @@
             <trans-unit id="button.tree">
 				<source>Tree</source>
 			</trans-unit>
+            <trans-unit id="button.edit.page_properties">
+				<source>Edit page</source>
+			</trans-unit>
+            <trans-unit id="button.edit.open_in_slug_page_module">
+				<source>Open in page module</source>
+			</trans-unit>
 
 
             <trans-unit id="siteselect.options.others">
@@ -120,13 +126,13 @@
 
 
             <trans-unit id="filter.form.label.search_key">
-				<source>Find slugs by keyword/s</source>
+				<source>Search keyword/s</source>
 			</trans-unit>
             <trans-unit id="filter.form.label.entries_per_page">
-				<source>Entries to show</source>
+				<source>Max entries</source>
 			</trans-unit>
             <trans-unit id="filter.form.label.order_by">
-				<source>Order by field</source>
+				<source>Order by</source>
 			</trans-unit>
             <trans-unit id="filter.form.label.order">
 				<source>Order</source>
@@ -167,6 +173,15 @@
 			</trans-unit>
             <trans-unit id="filter.form.select.option.ascending">
 				<source>Ascending</source>
+			</trans-unit>
+            <trans-unit id="filter.form.select.option.all">
+				<source>all</source>
+			</trans-unit>
+            <trans-unit id="filter.form.select.option.hidden">
+				<source>hidden</source>
+			</trans-unit>
+            <trans-unit id="filter.form.select.option.visible">
+				<source>visible</source>
 			</trans-unit>
 
 

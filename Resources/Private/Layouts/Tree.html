@@ -1,4 +1,9 @@
-<html xmlns:f="https://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+{namespace core = TYPO3\CMS\Core\ViewHelpers}
+<html
+   xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+   xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+   xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+   data-namespace-typo3-fluid="true">
 
     <f:asset.css identifier="slug" href="EXT:slug/Resources/Public/Css/Backend.css"/>
     <f:asset.css identifier="slug_icons" href="EXT:slug/Resources/Public/Libs/bootstrap-icons/font/bootstrap-icons.min.css"/>
@@ -6,7 +11,7 @@
 
     <section id="typo3-inner-docbody">
         <f:flashMessages />
-        <f:render section="content" />
+        <f:render section="Content" />
         <f:render partial="ModuleFooter" />
     </section>
 
