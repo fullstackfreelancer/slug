@@ -1,6 +1,15 @@
 <?php
 namespace SIMONKOEHLER\Slug\Domain\Model;
 
+/**
+ * Represents a TYPO3 page entity with slug management features.
+ *
+ * This model encapsulates typical TYPO3 page properties such as title,
+ * UID, localization parent, doktype, language, and flags like hidden,
+ * site root status, and slug locking.
+ *
+ * @package SIMONKOEHLER\Slug\Domain\Model
+ */
 class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
     /**

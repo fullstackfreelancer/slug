@@ -1,11 +1,15 @@
 <?php
 use SIMONKOEHLER\Slug\Controller;
 
-/*
- * This file was created by Simon Köhler
- * https://kohlercode.com
+/**
+ * Route configuration for the Slug extension.
+ *
+ * This array defines the API endpoints (path => controller action) used for AJAX requests
+ * within the Slug extension. Each route maps a URL path to a specific method in the
+ * AjaxController class.
+ *
+ * @return array<string, array{path: string, target: string}>
  */
-
 return [
     'slug_list' => [
         'path' => '/slug/list',

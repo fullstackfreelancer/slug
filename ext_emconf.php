@@ -1,5 +1,32 @@
 <?php
-
+/**
+ * Extension configuration for the "Slug" TYPO3 extension.
+ *
+ * This configuration provides metadata and settings for the extension,
+ * including title, description, author information, version, state,
+ * dependencies, and autoloading rules.
+ *
+ * @var array{
+ *   title: string,
+ *   description: string,
+ *   category: string,
+ *   author: string,
+ *   author_email: string,
+ *   company: string,
+ *   state: string,
+ *   clearCacheOnLoad: bool,
+ *   version: string,
+ *   constraints: array{
+ *     depends: array<string, string>,
+ *     conflicts: array<string, mixed>,
+ *     suggests: array<string, mixed>
+ *   },
+ *   autoload: array{
+ *     'psr-4': array<string, string>
+ *   }
+ * }
+ */
+ 
 $EM_CONF['slug'] = [
     'title' => 'Slug',
     'description' => 'Helps managing the URL slugs of your TYPO3 pages and custom records',
@@ -19,7 +46,6 @@ $EM_CONF['slug'] = [
     ],
     'autoload' => [
         'psr-4' => [
-            // The prefix must end with a backslash
             'SIMONKOEHLER\\Slug\\' => 'Classes',
         ],
     ],

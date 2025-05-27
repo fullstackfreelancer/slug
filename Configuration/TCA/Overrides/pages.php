@@ -1,14 +1,15 @@
 <?php
+/*
+ * TYPO3 TCA Override for the "pages" table
+ *
+ * Adds a custom checkbox field "tx_slug_locked" to control slug locking per page.
+ * Also extends the existing "slug" field configuration to increase the input size.
+ */
+ 
 if (!defined('TYPO3')) {
   die ('Access denied.');
 }
 
-/*
- * This file was created by Simon Köhler
- * https://simon-koehler.com
- */
-
-// Configure new fields:
 $fields = array(
   'tx_slug_locked' => array(
     'label' => 'LLL:EXT:slug/Resources/Private/Language/locallang_db.xlf:tx_slug_domain_model_page.slug_lock',

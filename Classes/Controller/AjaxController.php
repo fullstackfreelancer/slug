@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author Simon Kohler <simon@kohlercode.com>
+ */
+
 declare(strict_types=1);
 namespace SIMONKOEHLER\Slug\Controller;
 use Psr\Http\Message\ResponseInterface;
@@ -26,6 +30,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
  *
  * Handles various AJAX requests related to slug generation and management.
  */
+
 class AjaxController extends ActionController {
 
     /**

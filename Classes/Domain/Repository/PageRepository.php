@@ -10,11 +10,13 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use Psr\Http\Message\ServerRequestInterface;
 
-/*
- * This file was created by Simon Köhler
- * https://simon-koehler.com
+/**
+ * Repository for managing page records with extended slug and language features.
+ *
+ * Provides methods to retrieve page data, handle translations, and manage slug states.
+ *
+ * @package SIMONKOEHLER\Slug\Domain\Repository
  */
-
 class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
     protected $table = 'pages';
@@ -24,14 +26,25 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
     protected $helper;
     public $tree;
 
+    /**
+     * Constructor initializes sites and helper utility instances.
+     */
     public function __construct()
     {
         $this->sites = GeneralUtility::makeInstance(SiteFinder::class)->getAllSites();
         $this->helper = GeneralUtility::makeInstance(HelperUtility::class);
     }
 
-
-    function getLanguageValue($field,$uid){
+    /**
+     * Returns the value of a language field by UID.
+     *
+     * If no languages are set, assumes default language.
+     *
+     * @param string $field Field name to retrieve from language record.
+     * @param int $uid Language UID to search for.
+     * @return string
+     */
+    public function getLanguageValue($field,$uid){
         $output = '';
         if (!empty($this->languages)) {
             foreach ($this->languages as $language) {
@@ -41,8 +54,10 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                 }
             }
         } else {
-            // if we dont have additional languages
-            // lets assume we are on the default language
+            /**
+            * if we dont have additional languages
+            * lets assume we are on the default language
+            */
             if($field === 'flag'){
                 $output = 'multiple';
             }
