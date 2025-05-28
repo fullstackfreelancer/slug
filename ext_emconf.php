@@ -6,6 +6,15 @@
  * including title, description, author information, version, state,
  * dependencies, and autoloading rules.
  *
+ * @package    Slug
+ * @license    http://opensource.org/licenses/gpl-license.php  GNU Public License
+ * @author     Moshe Teutsch <moteutsch@gmail.com>
+ */
+
+
+
+ /**
+ *
  * @var array{
  *   title: string,
  *   description: string,
@@ -26,7 +35,6 @@
  *   }
  * }
  */
- 
 $EM_CONF['slug'] = [
     'title' => 'Slug',
     'description' => 'Helps managing the URL slugs of your TYPO3 pages and custom records',
