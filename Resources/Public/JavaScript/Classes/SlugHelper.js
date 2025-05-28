@@ -114,11 +114,10 @@ export class SlugHelper{
         } finally {
             slugInputField.removeAttribute('disabled');
         }
-        console.log('saveSlug..')
     }
 
     static async saveAllSlugs() {
-        const allRecords = document.querySelectorAll('.not-saved[id^="record-"]');
+        const allRecords = document.querySelectorAll('.slug-record.not-saved[data-locked="0"]');
         const saveButton = document.getElementById('btn-save-all');
         const statusContainer = document.getElementById('slug-status');
 
@@ -129,7 +128,7 @@ export class SlugHelper{
 
         saveButton.setAttribute('disabled', 'disabled');
         saveButton.textContent = 'Speichern...';
-        statusContainer.innerHTML = `<span style="color:#666;">Speichere Slugs... (${allRecords.length})</span>`;
+        statusContainer.innerHTML = `<span style="color:#666;">Saving Slugs... (${allRecords.length})</span>`;
 
         let savedCount = 0;
 
@@ -138,18 +137,71 @@ export class SlugHelper{
             const slugInput = record.querySelector('.slug-input');
             const slug = slugInput.value;
             const sitePrefix = record.dataset.sitePrefix || '';
-
-            await this.saveSlug(uid, slug, sitePrefix, 'page'); // wartet jeweils, damit die Requests nacheinander laufen
+            await this.saveSlug(uid, slug, sitePrefix, 'page');
             savedCount++;
         }
 
-        statusContainer.innerHTML = `<span style="color:green;">✔ ${savedCount} Slugs gespeichert</span>`;
+        statusContainer.innerHTML = `<span style="color:green;">✔ ${savedCount} Slugs saved</span>`;
 
         setTimeout(() => {
             statusContainer.innerHTML = '';
         }, 2000);
 
         saveButton.removeAttribute('disabled');
+    }
+
+    static async generateSlug(uid, sitePrefix, recordTable = 'page', titleField = 'title', slugField = 'slug') {
+        let url = recordTable === 'page'
+            ? `${TYPO3.settings.ajaxUrls['slug_generate']}&uid=${uid}`
+            : `${TYPO3.settings.ajaxUrls['slug_generate_record']}&uid=${uid}&table=${recordTable}&slugField=${slugField}&titleField=${titleField}`;
+
+        try {
+            const res = await fetch(url);
+            if (!res.ok) {
+                throw new Error(res.statusText);
+            }
+
+            const response = await res.json();
+            this.generateResponse(response, uid);
+            this.updateGooglePreviewUrl(sitePrefix + response.slug, uid);
+
+            const row = document.getElementById(`record-${uid}`);
+            if (row) row.classList.add('not-saved');
+
+        } catch (error) {
+            top.TYPO3.Notification.error('Ajax Error', error.message);
+        }
+
+    }
+
+    static async generateAllSlugs(){
+        const allRecords = document.querySelectorAll('.slug-record[data-locked="0"]');
+        const generateButton = document.getElementById('btn-generate-all');
+        const statusContainer = document.getElementById('slug-status');
+        let savedCount = 0;
+        for (const record of allRecords) {
+            const uid = record.id.replace('record-', '');
+            const slugInput = record.querySelector('.slug-input');
+            const slug = slugInput.value;
+            const sitePrefix = record.dataset.sitePrefix || '';
+            await this.generateSlug(uid, sitePrefix);
+            savedCount++;
+        }
+        statusContainer.innerHTML = `<span style="color:green;">✔ ${savedCount} Slugs generated</span>`;
+        setTimeout(() => {
+            statusContainer.innerHTML = '';
+        }, 2000);
+    }
+
+    static generateResponse(response,uid){
+        let slugInputField = document.getElementById('slug-input-field-'+uid);
+        if (response.slug) {
+            slugInputField.value = response.slug
+            top.TYPO3.Notification.success(window.slugNotes['notes.success.generated'], response.slug)
+        } else {
+            top.TYPO3.Notification.info(window.slugNotes['notes.info.nochanges'], response.slug)
+        }
+        slugInputField.removeAttribute('disabled')
     }
 
     static loadSlugInfo(uid,type){
@@ -187,41 +239,6 @@ export class SlugHelper{
         let obj = document.querySelector('div[data-googleurl="'+uid+'"]');
         let obj_exists = obj !== null;
         if(obj_exists){ obj.innerHTML = url; }
-    }
-
-    static async generateSlug(uid, sitePrefix, recordTable = 'page', titleField = 'title', slugField = 'slug') {
-        let url = recordTable === 'page'
-            ? `${TYPO3.settings.ajaxUrls['slug_generate']}&uid=${uid}`
-            : `${TYPO3.settings.ajaxUrls['slug_generate_record']}&uid=${uid}&table=${recordTable}&slugField=${slugField}&titleField=${titleField}`;
-
-        try {
-            const res = await fetch(url);
-            if (!res.ok) {
-                throw new Error(res.statusText);
-            }
-
-            const response = await res.json();
-            this.generateResponse(response, uid);
-            this.updateGooglePreviewUrl(sitePrefix + response.slug, uid);
-
-            const row = document.getElementById(`record-${uid}`);
-            if (row) row.classList.add('not-saved');
-
-        } catch (error) {
-            top.TYPO3.Notification.error('Ajax Error', error.message);
-        }
-
-    }
-
-    static generateResponse(response,uid){
-        let slugInputField = document.getElementById('slug-input-field-'+uid);
-        if (response.slug) {
-            slugInputField.value = response.slug
-            top.TYPO3.Notification.success(window.slugNotes['notes.success.generated'], response.slug)
-        } else {
-            top.TYPO3.Notification.info(window.slugNotes['notes.info.nochanges'], response.slug)
-        }
-        slugInputField.removeAttribute('disabled')
     }
 
     static updatePageTitle(titleField){
