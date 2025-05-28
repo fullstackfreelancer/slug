@@ -1,14 +1,12 @@
 import AjaxRequest from "@typo3/core/ajax/ajax-request.js";
 import { SlugHelper } from '@simonkoehler/slug/Classes/SlugHelper.js';
 
-console.log('ListController.js works!')
+const titleField = 'title';
+const slugField = 'slug';
+const recordTable = 'pages';
 
-let titleField = 'title'
-let slugField = 'slug'
-let recordTable = 'pages'
-
-SlugHelper.initFilterFields(loadHTML,recordTable)
-SlugHelper.loadList(recordTable,titleField,slugField,0,null,loadHTML)
+SlugHelper.initFilterFields(loadHTML,recordTable);
+SlugHelper.loadList(recordTable,titleField,slugField,0,null,loadHTML);
 
 function loadHTML(responseText) {
     document.getElementById('slug-list-wrap').innerHTML = responseText;
@@ -57,7 +55,6 @@ function initInterface(){
         if(button_info){
             button_info.addEventListener('click',function(e){
                 SlugHelper.loadSlugInfo(uid,'page');
-                console.log('INFO CLICKED!')
             });
         }
 
@@ -86,10 +83,9 @@ function initInterface(){
 
     button_save_all.addEventListener('click',function(e){
         SlugHelper.saveAllSlugs();
-        console.log('SAVE ALL FUCK!')
     });
 
     button_generate_all.addEventListener('click',function(e){
-
+        SlugHelper.generateAllSlugs();
     });
 }
