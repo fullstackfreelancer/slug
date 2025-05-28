@@ -24,12 +24,12 @@
 </f:for>
 
 <f:section name="entry">
-    <div id="record-{page.uid}" data-record="{page.uid}" data-siteprefix="{page.base}{page.base_language}" class="slug-record px-2 mb-2 shadow shadow-sm">
+    <div id="record-{page.uid}" data-locked="{page.tx_slug_locked}" data-record="{page.uid}" data-siteprefix="{page.base}{page.base_language}" class="slug-record px-2 mb-2 shadow shadow-sm">
         <div class="row">
             <div class="col-lg-6 py-1">
                 <div class="d-flex">
                     <div class="{indent}">
-                        <f:render section="title" arguments="{doktype:page.doktype, title:page.title, root:page.is_siteroot, uid:page.uid, hidden:page.hidden}"/>
+                        <f:render section="title" arguments="{doktype:page.doktype, title:page.title, root:page.is_siteroot, uid:page.uid, hidden:page.hidden, locked:page.tx_slug_locked}"/>
                         <a href="{page.base}{page.base_language}{page.slug}" target="_blank" class="slug-preview">{page.base}{page.base_language}{page.slug}</a>
                     </div>
                 </div>
@@ -42,8 +42,10 @@
             </div>
             <div class="col-lg-2 py-1">
                 <div class="button-group ms-auto">
+                    <f:if condition="{page.tx_slug_locked} === 0">
                     <a class="btn btn-default btn-save"><core:icon identifier="actions-save" size="small" /></a>
                     <a class="btn btn-default btn-generate"><core:icon identifier="actions-refresh" size="small" /></a>
+                    </f:if>
                     <div class="dropdown d-inline">
                       <button class="btn btn-default dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
                       <ul class="dropdown-menu" style="min-width:230px;">
@@ -67,7 +69,7 @@
         <f:then>
             <h5>
                 <core:icon identifier="apps-pagetree-folder-root" overlay="{overlay}" size="small" title="uid={uid}"/>
-                <span class="page-title" contenteditable="false" data-pageuid="{uid}" title="double click to edit">{title}</span>
+                <f:render section="titlefield" arguments="{title:title,uid:uid,locked:locked}"/>
             </h5>
         </f:then>
         <f:else>
@@ -75,34 +77,38 @@
                 <f:case value="254">
                     <h5>
                         <core:icon identifier="apps-pagetree-folder-default" overlay="{overlay}" size="small" title="uid={uid}"/>
-                        <span class="page-title" contenteditable="false" data-pageuid="{uid}" title="double click to edit">{title}</span>
+                        <f:render section="titlefield" arguments="{title:title,uid:uid,locked:locked}"/>
                     </h5>
                 </f:case>
                 <f:case value="6">
                     <h5>
                         <core:icon identifier="apps-pagetree-page-backend-users" overlay="{overlay}" size="small" title="uid={uid}"/>
-                        <span class="page-title" contenteditable="false" data-pageuid="{uid}" title="double click to edit">{title}</span>
+                        <f:render section="titlefield" arguments="{title:title,uid:uid,locked:locked}"/>
                     </h5>
                 </f:case>
                 <f:case value="3">
                     <h5>
                         <core:icon identifier="apps-pagetree-page-shortcut-external" overlay="{overlay}" size="small" title="uid={uid}"/>
-                        <span class="page-title" contenteditable="false" data-pageuid="{uid}" title="double click to edit">{title}</span>
+                        <f:render section="titlefield" arguments="{title:title,uid:uid,locked:locked}"/>
                     </h5>
                 </f:case>
                 <f:case value="4">
                     <h5>
                         <core:icon identifier="apps-pagetree-page-shortcut" overlay="{overlay}" size="small" title="uid={uid}"/>
-                        <span class="page-title" contenteditable="false" data-pageuid="{uid}" title="double click to edit">{title}</span>
+                        <f:render section="titlefield" arguments="{title:title,uid:uid,locked:locked}"/>
                     </h5>
                 </f:case>
                 <f:defaultCase>
                     <h5>
                         <core:icon identifier="apps-pagetree-page-default" overlay="{overlay}" size="small" title="uid={uid}"/>
-                        <span class="page-title" contenteditable="false" data-pageuid="{uid}" title="double click to edit">{title}</span>
+                        <f:render section="titlefield" arguments="{title:title,uid:uid,locked:locked}"/>
                     </h5>
                 </f:defaultCase>
             </f:switch>
         </f:else>
     </f:if>
+</f:section>
+
+<f:section name="titlefield">
+    <span class="page-title locked-{locked}" contenteditable="false" data-pageuid="{uid}" title="double click to edit" style="white-space: nowrap;">{title}</span>
 </f:section>
