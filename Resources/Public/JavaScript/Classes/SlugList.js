@@ -39,7 +39,6 @@ class SlugList{
     generate(uid, sitePrefix){
 
         const url = `${TYPO3.settings.ajaxUrls['slug_generate']}&uid=${uid}`;
-        console.log(url)
         const req = new XMLHttpRequest();
         req.open("GET", url, true);
         req.setRequestHeader("Content-type", "application/json; charset=utf-8");
