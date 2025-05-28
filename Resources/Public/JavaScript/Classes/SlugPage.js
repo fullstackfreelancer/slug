@@ -35,8 +35,6 @@ class SlugPage{
     generateSlug(uid, sitePrefix){
 
         const url = `${TYPO3.settings.ajaxUrls['slug_generate']}&uid=${uid}`;
-        console.log(url)
-
         const req = new XMLHttpRequest();
         const slugInputField = document.getElementById('slug-input');
         const slugPreview = document.getElementById('slug-preview');
