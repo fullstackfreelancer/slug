@@ -185,6 +185,7 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                 't.title AS t_title',
                 't.nav_title AS t_nav_title',
                 't.slug AS t_slug',
+                't.tx_slug_locked AS t_tx_slug_locked',
                 't.sys_language_uid AS t_sys_language_uid'
             )
             ->from('pages', 'p')
@@ -199,9 +200,6 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
             )
             ->where(
                 $queryBuilder->expr()->eq('p.sys_language_uid', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
-            )
-            ->andWhere(
-                $queryBuilder->expr()->eq('p.tx_slug_locked', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
             )
             ->setMaxResults($maxitems)
             ->orderBy($orderby ?: 'p.crdate', $order ?: 'DESC');
@@ -261,6 +259,7 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                     'is_siteroot' => $row['is_siteroot'],
                     'nav_title' => $row['nav_title'],
                     'slug' => $row['slug'],
+                    'tx_slug_locked' => $row['tx_slug_locked'],
                     'sys_language_uid' => $row['sys_language_uid'],
                     'l10n_parent' => $row['l10n_parent'],
                     'crdate' => $row['crdate'],
@@ -280,6 +279,7 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                     'title' => $row['t_title'],
                     'nav_title' => $row['t_nav_title'],
                     'slug' => $row['t_slug'],
+                    'tx_slug_locked' => $row['t_tx_slug_locked'],
                     'sys_language_uid' => $row['t_sys_language_uid'],
                     'l10n_parent' => $row['l10n_parent'],
                     'flag' => $site['languages'][$row['t_sys_language_uid']]['flag'],
