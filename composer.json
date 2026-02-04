@@ -1,6 +1,6 @@
 {
     "name": "kohlercode/slug",
-    "description": "Helps you managing the URL slugs of your TYPO3 site",
+    "description": "Slug - Helps you managing the URL slugs of your TYPO3 site",
     "type": "typo3-cms-extension",
     "version": "5.0.0",
     "license": "GPL-3.0",
