@@ -11,24 +11,4 @@ module.tx_slug {
         layoutRootPaths.0 = EXT:slug/Resources/Private/Layouts/
         layoutRootPaths.1 = {$module.tx_slug.view.layoutRootPath}
     }
-    settings{
-        additionalTables{
-
-
-            tx_news_domain_model_news{
-                # Label for the backend
-                label = News
-                # Database field where the slug is saved
-                slugField = path_segment
-                # Field thats used for the title display
-                titleField = title
-                # Show only records from given PID (parent page)
-                pid = 1
-                # The icon for your records. Please make sure the file exsists!
-                icon = EXT:news/Resources/Public/Icons/news_domain_model_news.svg
-            }
-
-
-        }
-    }
 }
