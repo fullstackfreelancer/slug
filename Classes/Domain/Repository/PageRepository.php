@@ -1,8 +1,8 @@
 <?php
-namespace SIMONKOEHLER\Slug\Domain\Repository;
+namespace KOHLERCODE\Slug\Domain\Repository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
-use SIMONKOEHLER\Slug\Utility\HelperUtility;
+use KOHLERCODE\Slug\Utility\HelperUtility;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Database\Connection;
@@ -15,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * Provides methods to retrieve page data, handle translations, and manage slug states.
  *
- * @package SIMONKOEHLER\Slug\Domain\Repository
+ * @package KOHLERCODE\Slug\Domain\Repository
  */
 class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
@@ -269,13 +269,16 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                     'flag' => $flag ?? '',
                     'translations' => [],
                     'base' => $base ?? '',
-                    'base_language' => $base_language ?? ''
+                    'base_language' => $base_language ?? '',
+                    'full_url' => $helper->getPageUrl($base,$base_language,$row['slug'])
                 ];
             }
 
             if (!empty($row['t_uid'])) {
+                $t_base_language = rtrim($site['languages'][$row['t_sys_language_uid']]['base'],'/') ?? '';
                 $pages[$uid]['_translations'][$row['t_sys_language_uid']] = [
                     'uid' => $row['t_uid'],
+                    'doktype' => $row['doktype'],
                     'title' => $row['t_title'],
                     'nav_title' => $row['t_nav_title'],
                     'slug' => $row['t_slug'],
@@ -284,7 +287,8 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                     'l10n_parent' => $row['l10n_parent'],
                     'flag' => $site['languages'][$row['t_sys_language_uid']]['flag'],
                     'base' => rtrim($site['base'],'/') ?? '',
-                    'base_language' => rtrim($site['languages'][$row['t_sys_language_uid']]['base'],'/') ?? ''
+                    'base_language' => $t_base_language,
+                    'full_url' => $helper->getPageUrl($base,$t_base_language,$row['t_slug'])
                 ];
             }
         }

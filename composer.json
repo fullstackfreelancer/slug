@@ -1,12 +1,12 @@
 {
-    "name": "fullstackfreelancer/slug",
+    "name": "kohlercode/slug",
     "description": "Helps you managing the URL slugs of your TYPO3 site",
     "type": "typo3-cms-extension",
     "version": "5.0.0",
     "license": "GPL-3.0",
     "require": {
         "php": ">=8.0.0",
-        "typo3/cms-core": "^13.4"
+        "typo3/cms-core": "^14.1"
     },
     "keywords": [
         "TYPO3",
@@ -29,7 +29,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "SIMONKOEHLER\\Slug\\": "Classes"
+            "KOHLERCODE\\Slug\\": "Classes"
+        }
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "slug"
         }
     }
 }

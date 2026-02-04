@@ -1,5 +1,5 @@
 <?php
-namespace SIMONKOEHLER\Slug\Utility;
+namespace KOHLERCODE\Slug\Utility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -22,9 +22,7 @@ class HelperUtility {
             layoutRootPaths: ['EXT:slug/Resources/Private/Layouts','EXT:slugpro/Resources/Private/Layouts'],
             request: $request,
         );
-        $view = $viewFactory->create($viewFactoryData);
-        $view->setTemplate($templateName);
-        return $view;
+        return $viewFactory->create($viewFactoryData);
     }
 
     // Get Extension Manager configuration from the ext_emconf.php of any extension
@@ -41,6 +39,68 @@ class HelperUtility {
             return false;
         }
 
+    }
+
+    /**
+     * Builds the URL by determining if the language base is a domain override.
+     */
+    public function getPageUrl(string $base, string $baseLanguage, string $slug): string
+    {
+        // 1. Sanitize the slug (remove leading slash)
+        $slug = ltrim($slug, '/');
+
+        // 2. Logic for domain replacement or path concatenation
+        if (str_starts_with($baseLanguage, 'http')) {
+            // If it's a URL and different from the main base, it becomes the new base
+            $finalBase = rtrim($baseLanguage, '/');
+        } else {
+            // Otherwise, combine main base and the language segment (e.g., /es/)
+            $mainBase = rtrim($base, '/');
+            $langPath = trim($baseLanguage, '/');
+            
+            // Use array_filter to ignore the language segment if it's empty
+            $finalBase = implode('/', array_filter([$mainBase, $langPath]));
+        }
+
+        // 3. Return the final joined string
+        return $finalBase . '/' . $slug;
+    }
+
+    /**
+     * Generates an absolute frontend URL for a given page UID (can be a translation UID).
+     * * @param int $pageUid The UID of the page or the translation
+     * @return string The absolute URL
+     */
+    public function getAbsoluteUrl(int $pageUid): string
+    {
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+
+        try {
+            // 1. Find the site and the specific language for this UID
+            // getSiteByPageId is smart: if you pass a translation UID, 
+            // it finds the correct site and language.
+            $site = $siteFinder->getSiteByPageId($pageUid);
+            
+            // 2. We need to find which language this specific UID belongs to.
+            // If it's a translation, we need to pass that language ID to the router.
+            $pageRecord = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Domain\Repository\PageRepository::class)
+                ->getPage($pageUid);
+                
+            $languageId = (int)($pageRecord['sys_language_uid'] ?? 0);
+
+            // 3. Generate the URI
+            $uri = $site->getRouter()->generateUri(
+                $pageUid,
+                ['_language' => $languageId]
+            );
+
+            // Ensure it's absolute (important for cross-domain or backend context)
+            return (string)$uri;
+
+        } catch (\Exception $e) {
+            // Fallback or log error if page doesn't exist/isn't in a site tree
+            return '';
+        }
     }
 
     // Finds and returns the base URL of the website

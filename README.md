@@ -7,7 +7,7 @@ The Slug backend module is designed to help manage large amounts of URL-slugs fo
 ## VERSION 5.0.0 COMING SOON
 
 If you like the slug extension, please consider to donate and help speed up the development.
-Your ideas to improve and extend the slug module are more than welcome: [send a message](https//kohlercode.com/contact)
+Your ideas to improve and extend the slug module are more than welcome: [send a message](https://kohlercode.com/contact)
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/fullstackfreelancer/25)
 
@@ -78,7 +78,7 @@ Link to the slug Editor for a single page: "https://yourbackend.com/typo3/module
 ### Oops, an error occured!: Invalid configuration: "vendorName" is not set
 This happens, when you try to use the extension with version 3.0.0 or higher, in a TYPO3 version 9.5 or lower version. Please make sure to use slug v2.0.2 when using TYPO3 version 9!
 
-### Uncaught TYPO3 Exception: #1278450972: Class SIMONKOEHLER\Slug\Controller\PageController does not exist. Reflection failed.
+### Uncaught TYPO3 Exception: #1278450972: Class KOHLERCODE\Slug\Controller\PageController does not exist. Reflection failed.
 This exception occurs after upgrading the extension from 2.0.0 to 2.0.xx because the most important namespaces in the extbase PHP code have changed. Therefore, it is essential to clear the system's main cache and autoload data.
 
 ### Slug generation for News records failed?

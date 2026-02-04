@@ -78,7 +78,7 @@
 				<target>Seite bearbeiten</target>
 			</trans-unit>
             <trans-unit id="button.edit.open_in_slug_page_module">
-				<target>Im Seitenmodul öffnen</target>
+				<target>Im Slug-Seitenmodul öffnen</target>
 			</trans-unit>
 
 
@@ -193,7 +193,7 @@
 
 
 			<trans-unit id="pro.feature_note">
-				<target><![CDATA[Dieses Feature steht nur in Slug PRO zur Verfügung. <a href="https://slugpro.simon-koehler.com/de" target="_blank" class="btn btn-primary">SLUG PRO KAUFEN</a>]]></target>
+				<target><![CDATA[<p>Dieses Feature steht nur in Slug PRO zur Verfügung.</p><a href="https://slugpro.kohlercode.com/de" target="_blank" class="btn btn-lg btn-default">SLUG PRO JETZT KAUFEN</a>]]></target>
 			</trans-unit>
 
 
@@ -201,7 +201,7 @@
 				<target>Unterstützen Sie Open Source</target>
 			</trans-unit>
 			<trans-unit id="extension_info.support_development_text">
-				<target>Unterstützen Sie die Open Source Entwicklung mit einer Spende. Das ist der beste Weg, um Extensions für Ihr Lieblings-CMS aktuell zu halten! Diese Erweiterung wird von Simon Köhler seit November 2018 entwickelt.</target>
+				<target>Unterstützen Sie die Open Source Entwicklung mit einer Spende. Das ist der beste Weg, um Extensions aktuell zu halten! Diese Erweiterung wird von Simon Köhler seit November 2018 entwickelt.</target>
 			</trans-unit>
 			<trans-unit id="extension_info.support_development.donate">
 				<target>Spende mit PayPal</target>

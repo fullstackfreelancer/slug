@@ -5,11 +5,12 @@
    xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
    data-namespace-typo3-fluid="true">
 
-    <f:asset.css identifier="slug" href="EXT:slug/Resources/Public/Css/Backend.css"/>
-    <f:asset.css identifier="slug_icons" href="EXT:slug/Resources/Public/Libs/bootstrap-icons/font/bootstrap-icons.min.css"/>
+    <f:asset.css identifier="slug" href="EXT:slug/Resources/Public/Styles/Backend.css"/>
+    <f:asset.css identifier="slug_icons" href="EXT:slug/Resources/Public/Libs/bootstrap-icons/bootstrap-icons.css"/>
 
     <f:be.pageRenderer includeJavaScriptModules="{
-         0: '@simonkoehler/slug/PageController.js'
+         0: '@kohlercode/slug/PageController.js',
+         1: '@kohlercode/slug/InfoModal.js'
       }"
       />
 
@@ -19,7 +20,5 @@
         <f:render section="Content" />
         <f:render partial="ModuleFooter" />
     </section>
-
-    <f:render partial="ModalExtensionInfo"/>
 
 </html>

@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [5.0.0] - 2026-02-05
+- New alpha version ready for testing
+- Compatibility set to TYPO3 version 14
+- Several code optimizations done
+
 ## [3.0.3] - 2019-12-21
 - Compatibility set to 9.5 again!
 - Status set to stable

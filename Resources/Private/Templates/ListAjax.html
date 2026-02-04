@@ -29,8 +29,7 @@
             <div class="col-lg-6 py-1">
                 <div class="d-flex">
                     <div class="{indent}">
-                        <f:render section="title" arguments="{doktype:page.doktype, title:page.title, root:page.is_siteroot, uid:page.uid, hidden:page.hidden, locked:page.tx_slug_locked}"/>
-                        <a href="{page.base}{page.base_language}{page.slug}" target="_blank" class="slug-preview">{page.base}{page.base_language}{page.slug}</a>
+                        <f:render section="title" arguments="{doktype:page.doktype, title:page.title, root:page.is_siteroot, uid:page.uid, hidden:page.hidden, locked:page.tx_slug_locked, full_url:page.full_url}"/>
                     </div>
                 </div>
             </div>
@@ -49,9 +48,17 @@
                     <div class="dropdown d-inline">
                       <button class="btn btn-default dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
                       <ul class="dropdown-menu" style="min-width:230px;">
-                          <li><be:link.editRecord uid="{page.uid}" table="pages" returnUrl="{f:be.uri(route: 'slug_list')}" class="dropdown-item"><i class="bi bi-pen"></i> {f:translate(key:'button.edit.page_properties', extensionName: 'slug')}</be:link.editRecord></li>
-                          <li><f:be.link route="slug_page" parameters="{id:page.uid}" class="dropdown-item"><i class="bi bi-pen"></i> {f:translate(key:'button.edit.open_in_slug_page_module', extensionName: 'slug')}</f:be.link></li>
-                          <li><a class="dropdown-item btn-info"><core:icon identifier="actions-info-circle" size="small" /> Info (experimental)</a></li>
+                          <f:if condition="{slugpro}">
+                            <f:then>
+                                <li><f:be.link route="slug_page" parameters="{id:page.uid}" class="dropdown-item"><i class="bi bi-pen"></i> {f:translate(key:'button.edit.open_in_slug_page_module', extensionName: 'slug')}</f:be.link></li>
+                                <li><be:link.editRecord uid="{page.uid}" table="pages" returnUrl="{f:be.uri(route: 'slug_list')}" class="dropdown-item"><i class="bi bi-pen"></i> {f:translate(key:'button.edit.page_properties', extensionName: 'slug')}</be:link.editRecord></li>
+                                <li><a href="#" class="dropdown-item btn-info"><core:icon identifier="actions-info-circle" size="small" /> Info (experimental)</a></li>
+                            </f:then>
+                            <f:else>
+                                <li title="Slug PRO Feature"><button disabled class="dropdown-item"><i class="bi bi-pen"></i> {f:translate(key:'button.edit.open_in_slug_page_module', extensionName: 'slug')}</button></li>
+                                <li><a href="#" class="dropdown-item btn-info"><core:icon identifier="actions-info-circle" size="small" /> Info (experimental)</a></li>
+                            </f:else>
+                          </f:if>
                       </ul>
                     </div>
                 </div>
@@ -79,30 +86,35 @@
                         <core:icon identifier="apps-pagetree-folder-default" overlay="{overlay}" size="small" title="uid={uid}"/>
                         <f:render section="titlefield" arguments="{title:title,uid:uid,locked:locked}"/>
                     </h5>
+                    <div class="slug-preview text-muted">{full_url}</div>
                 </f:case>
                 <f:case value="6">
                     <h5>
                         <core:icon identifier="apps-pagetree-page-backend-users" overlay="{overlay}" size="small" title="uid={uid}"/>
                         <f:render section="titlefield" arguments="{title:title,uid:uid,locked:locked}"/>
                     </h5>
+                    <a href="{full_url}" target="_blank" class="slug-preview">{full_url}</a>
                 </f:case>
                 <f:case value="3">
                     <h5>
                         <core:icon identifier="apps-pagetree-page-shortcut-external" overlay="{overlay}" size="small" title="uid={uid}"/>
                         <f:render section="titlefield" arguments="{title:title,uid:uid,locked:locked}"/>
                     </h5>
+                    <a href="{full_url}" target="_blank" class="slug-preview">{full_url}</a>
                 </f:case>
                 <f:case value="4">
                     <h5>
                         <core:icon identifier="apps-pagetree-page-shortcut" overlay="{overlay}" size="small" title="uid={uid}"/>
                         <f:render section="titlefield" arguments="{title:title,uid:uid,locked:locked}"/>
                     </h5>
+                    <a href="{full_url}" target="_blank" class="slug-preview">{full_url}</a>
                 </f:case>
                 <f:defaultCase>
                     <h5>
                         <core:icon identifier="apps-pagetree-page-default" overlay="{overlay}" size="small" title="uid={uid}"/>
                         <f:render section="titlefield" arguments="{title:title,uid:uid,locked:locked}"/>
                     </h5>
+                    <a href="{full_url}" target="_blank" class="slug-preview">{full_url}</a>
                 </f:defaultCase>
             </f:switch>
         </f:else>
@@ -110,5 +122,5 @@
 </f:section>
 
 <f:section name="titlefield">
-    <span class="page-title locked-{locked}" contenteditable="false" data-pageuid="{uid}" title="double click to edit" style="white-space: nowrap;">{title}</span>
+    <span class="page-title fs-4 fw-bold locked-{locked}" contenteditable="false" data-pageuid="{uid}" title="double click to edit" style="white-space: nowrap;">{title}</span>
 </f:section>

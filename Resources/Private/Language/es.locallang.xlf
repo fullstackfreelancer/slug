@@ -191,7 +191,7 @@
 
 
 			<trans-unit id="pro.feature_note">
-				<target><![CDATA[Esta función sólo está disponible en Slug PRO. <a href="https://slugpro.simon-koehler.com/es" target="_blank" class="btn btn-primary">COMPRAR SLUG PRO</a>]]></target>
+				<target><![CDATA[<p>Esta función sólo está disponible en Slug PRO.</p> <a href="https://slugpro.kohlercode.com/es" target="_blank" class="btn btn-lg btn-default">COMPRAR SLUG PRO YA</a>]]></target>
 			</trans-unit>
 
 

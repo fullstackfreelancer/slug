@@ -7,6 +7,6 @@ return [
     'imports' => [
         // recursive definiton, all *.js files in this folder are import-mapped
         // trailing slash is required per importmap-specification
-        '@simonkoehler/slug/' => 'EXT:slug/Resources/Public/JavaScript/',
+        '@kohlercode/slug/' => 'EXT:slug/Resources/Public/JavaScript/',
     ],
 ];

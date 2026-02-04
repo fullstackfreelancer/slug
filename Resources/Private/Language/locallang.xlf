@@ -81,7 +81,7 @@
 				<source>Edit page</source>
 			</trans-unit>
             <trans-unit id="button.edit.open_in_slug_page_module">
-				<source>Open in page module</source>
+				<source>Open in Slug page module</source>
 			</trans-unit>
 
 
@@ -199,7 +199,7 @@
 
 
 			<trans-unit id="pro.feature_note">
-				<source><![CDATA[This feature is only available in Slug PRO. <a href="https://slugpro.kohlercode.com/" target="_blank" class="btn btn-default">BUY SLUG PRO</a>]]></source>
+				<source><![CDATA[<p>This feature is only available in Slug PRO.</p> <a href="https://slugpro.kohlercode.com/" target="_blank" class="btn btn-lg btn-default">BUY SLUG PRO</a>]]></source>
 			</trans-unit>
 
 

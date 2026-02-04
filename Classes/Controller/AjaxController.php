@@ -4,11 +4,12 @@
  */
 
 declare(strict_types=1);
-namespace SIMONKOEHLER\Slug\Controller;
+namespace KOHLERCODE\Slug\Controller;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use SIMONKOEHLER\Slug\Utility\HelperUtility;
-use SIMONKOEHLER\Slug\Domain\Repository\PageRepository;
+use KOHLERCODE\Slug\Utility\HelperUtility;
+use KOHLERCODE\Slug\Domain\Repository\PageRepository;
+use KOHLERCODE\Slug\Domain\Repository\RecordRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -42,10 +43,12 @@ class AjaxController extends ActionController {
      * AjaxController constructor.
      *
      * @param PageRepository $pageRepository
+     * @param RecordRepository $recordRepository
      * @param ViewFactoryInterface $viewFactory
      */
     public function __construct(
         private PageRepository $pageRepository,
+        private RecordRepository $recordRepository,
         private ViewFactoryInterface $viewFactory
     ){
         $this->helper = GeneralUtility::makeInstance(HelperUtility::class);
@@ -69,7 +72,32 @@ class AjaxController extends ActionController {
         $view = $this->helper->createViewAndTemplatePaths('ListAjax',$request);
         $view->assign('pages', $pages);
         $view->assign('params', $params);
-        $viewRendered = $view->render();
+        $viewRendered = $view->render('ListAjax');
+        return new HtmlResponse($viewRendered);
+    }
+
+    /**
+     * Returns a list of extbase records via AJAX.
+     *
+     * @param ServerRequestInterface $request
+     * @return HtmlResponse
+     */
+    public function recordAction(ServerRequestInterface $request){
+        $params = $request->getQueryParams();
+        $records = $this->recordRepository->getRecordDataForList(
+            $params['table'],
+            $params['slug'],
+            $params['title'],
+            $params['maxentries'],
+            $params['key'],
+            $params['orderby'],
+            $params['order'],
+            $params['status']
+        );
+        $view = $this->helper->createViewAndTemplatePaths('RecordsAjax',$request);
+        $view->assign('records', $records);
+        $view->assign('params', $params);
+        $viewRendered = $view->render('RecordsAjax');
         return new HtmlResponse($viewRendered);
     }
 
@@ -225,17 +253,19 @@ class AjaxController extends ActionController {
         }
         $view = $this->helper->createViewAndTemplatePaths('SlugInfo',$request);
         $view->assign('uid',$root['uid']);
-        $view->assign('url',$root['slug']);
+        $view->assign('url',$this->helper->getAbsoluteUrl($root['uid']));
         $view->assign('title',$root['seo_title'] ?: $root['title']);
         $view->assign('description',$root['description'] ?: 'n/a');
         $view->assign('slugpro',$slugpro);
+        $view->assign('favicon','<img src="https://bearing-sale.com/favicon.ico">');
+        $view->assign('sitename','kohlercode.com');
         $translation = [
             'pro' => [
                 'feature_note' => $this->helper->getLangKey('pro.feature_note')
             ]
         ];
         $view->assign('translate',$translation);
-        return new HtmlResponse($view->render());
+        return new HtmlResponse($view->render('SlugInfo'));
     }
 
     /**
@@ -248,6 +278,24 @@ class AjaxController extends ActionController {
         $params = $request->getQueryParams();
         if(isset($params['title']) && isset($params['uid'])){
             $this->pageRepository->updatePageTitle($params['title'],$params['uid']);
+            $responseInfo['status'] = 'success';
+        }
+        else{
+            $responseInfo['status'] = 'error';
+        }
+        return new JsonResponse($responseInfo);
+    }
+
+    /**
+     * Updates a custom record title field.
+     *
+     * @param ServerRequestInterface $request
+     * @return JsonResponse
+     */
+    public function updateRecordTitle(\Psr\Http\Message\ServerRequestInterface $request){
+        $params = $request->getQueryParams();
+        if(isset($params['title']) && isset($params['uid']) && isset($params['table'])){
+            $this->recordRepository->updateRecordTitle($params['title'], $params['uid'], $params['table']);
             $responseInfo['status'] = 'success';
         }
         else{

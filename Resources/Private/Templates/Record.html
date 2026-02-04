@@ -1,0 +1,37 @@
+{namespace core = TYPO3\CMS\Core\ViewHelpers}
+<html
+   xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+   xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+   xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+   data-namespace-typo3-fluid="true">
+<f:layout name="Record" />
+
+<f:section name="Content">
+
+    <f:asset.script identifier="identifier123" priority="true" useNonce="true">
+    window.slugNotes = {};
+    window.slugNotes['notes.success.saved'] = "{f:translate(key:'notes.success.saved', extensionName: slug)}";
+    window.slugNotes['notes.success.generated'] = "{f:translate(key:'notes.success.generated', extensionName: slug)}";
+    window.slugNotes['notes.info.nochanges'] = "{f:translate(key:'notes.info.nochanges', extensionName: slug)}";
+    window.slugNotes['notes.info.slugexists'] = "{f:translate(key:'notes.info.slugexists', extensionName: slug)}";
+    window.slugNotes['notes.confirm.slashonly'] = "{f:translate(key:'notes.confirm.slashonly', extensionName: slug)}";
+    window.slugNotes['notes.error.noslug'] = "{f:translate(key:'notes.error.noslug', extensionName: slug)}";
+    window.slugNotes['notes.error.ajax'] = "{f:translate(key:'notes.error.ajax', extensionName: slug)}";
+    window.slugNotes['notes.generator.after_generating'] = "{f:translate(key:'notes.generator.after_generating', extensionName: slug)}";
+    </f:asset.script>
+
+    <div class="pt-3">
+        <f:flashMessages />
+        <f:render partial="SlugFilterList" arguments="{_all}"/>
+        <div 
+            class="container" 
+            id="slug-list-wrap"
+            data-table="{request.table}" 
+            data-title-field="{tableData.titleField}" 
+            data-slug-field="{tableData.slugField}" 
+            data-pid="{tableData.pid}"
+            >
+            Loading...</div>
+    </div>
+
+</f:section>

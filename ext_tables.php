@@ -26,6 +26,5 @@ call_user_func(
         );
         $slugConfiguration = $extensionConfiguration->get('slug');
 
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('slug', 'Configuration/TypoScript', 'Slug');
     }
 );

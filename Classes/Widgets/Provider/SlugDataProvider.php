@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace SIMONKOEHLER\Slug\Widgets\Provider;
+namespace KOHLERCODE\Slug\Widgets\Provider;
 
 use TYPO3\CMS\Dashboard\Widgets\NumberWithIconDataProviderInterface;
 

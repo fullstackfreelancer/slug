@@ -1,5 +1,5 @@
 <?php
-namespace SIMONKOEHLER\Slug\Domain\Model;
+namespace KOHLERCODE\Slug\Domain\Model;
 
 /**
  * Represents a TYPO3 page entity with slug management features.
@@ -8,7 +8,7 @@ namespace SIMONKOEHLER\Slug\Domain\Model;
  * UID, localization parent, doktype, language, and flags like hidden,
  * site root status, and slug locking.
  *
- * @package SIMONKOEHLER\Slug\Domain\Model
+ * @package KOHLERCODE\Slug\Domain\Model
  */
 class Page extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 

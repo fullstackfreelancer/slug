@@ -1,12 +1,18 @@
 import AjaxRequest from "@typo3/core/ajax/ajax-request.js";
 import { SlugHelper } from '@kohlercode/slug/Classes/SlugHelper.js';
 
-const titleField = 'title';
-const slugField = 'slug';
-const recordTable = 'pages';
+// 1. Fetch the configuration from the DOM
+const container = document.getElementById('slug-list-wrap');
 
-SlugHelper.initFilterFields(loadHTML,recordTable);
-SlugHelper.loadList(recordTable,titleField,slugField,0,null,loadHTML);
+// 2. Extract the values (with fallbacks just in case)
+const recordTable = container.dataset.table || 'pages';
+const titleField = container.dataset.titleField || 'title';
+const slugField = container.dataset.slugField || 'slug';
+const pid = container.dataset.pid || 0;
+
+SlugHelper.initFilterFields(loadHTML,recordTable,'slug_record');
+SlugHelper.loadList(recordTable,titleField,slugField,0,null,loadHTML,'slug_record',pid);
+
 
 function loadHTML(responseText) {
     document.getElementById('slug-list-wrap').innerHTML = responseText;
@@ -25,17 +31,17 @@ function initInterface(){
         const button_info = row.querySelector('.btn-info');
         const uid = row.getAttribute('data-record');
         const sitePrefix = row.getAttribute('data-siteprefix');
-        const page_title = row.querySelector('.page-title');
+        const record_title = row.querySelector('.record-title');
 
-        page_title.addEventListener('dblclick', function () {
-            page_title.setAttribute('contenteditable', 'true');
-            page_title.setAttribute('data-originaltext',page_title.textContent);
-            page_title.focus();
+        record_title.addEventListener('dblclick', function () {
+            record_title.setAttribute('contenteditable', 'true');
+            record_title.setAttribute('data-originaltext',record_title.textContent);
+            record_title.focus();
         });
 
-        page_title.addEventListener('blur', function(){
-            page_title.setAttribute('contenteditable', 'false');
-            SlugHelper.updatePageTitle(page_title);
+        record_title.addEventListener('blur', function(){
+            record_title.setAttribute('contenteditable', 'false');
+            SlugHelper.updateRecordTitle(record_title);
         });
 
         if(button_save){
@@ -54,7 +60,6 @@ function initInterface(){
         if(button_info){
             button_info.addEventListener('click',function(e){
                 SlugHelper.loadSlugInfo(uid,'page');
-                e.preventDefault();
             });
         }
 

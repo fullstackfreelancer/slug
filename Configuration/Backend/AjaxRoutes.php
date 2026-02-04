@@ -1,5 +1,5 @@
 <?php
-use SIMONKOEHLER\Slug\Controller;
+use KOHLERCODE\Slug\Controller;
 
 /**
  * Route configuration for the Slug extension.
@@ -14,6 +14,10 @@ return [
     'slug_list' => [
         'path' => '/slug/list',
         'target' => Controller\AjaxController::class . '::listAction'
+    ],
+    'slug_record' => [
+        'path' => '/slug/record',
+        'target' => Controller\AjaxController::class . '::recordAction'
     ],
     'slug_save_page' => [
         'path' => '/slug/savePageSlug',
@@ -43,12 +47,12 @@ return [
         'path' => '/slug/generateRecordSlug',
         'target' => Controller\AjaxController::class . '::generateRecordSlug'
     ],
-    'slug_tree_items' => [
-        'path' => '/slug/loadTreeItemSlugs',
-        'target' => Controller\AjaxController::class . '::loadTreeItemSlugs'
-    ],
     'slug_update_page_title' => [
         'path' => '/slug/savePageTitle',
         'target' => Controller\AjaxController::class . '::updatePageTitle'
+    ],
+    'slug_update_record_title' => [
+        'path' => '/slug/saveRecordTitle',
+        'target' => Controller\AjaxController::class . '::updateRecordTitle'
     ],
 ];

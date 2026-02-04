@@ -1,6 +1,6 @@
 <?php
-use SIMONKOEHLER\Slug\Controller\PageController;
-use SIMONKOEHLER\Slug\Controller\ExtensionController;
+use KOHLERCODE\Slug\Controller\SlugController;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**
  * Module configuration for the Slug extension.
@@ -15,26 +15,12 @@ use SIMONKOEHLER\Slug\Controller\ExtensionController;
  *
  * @return array<string, array<string, mixed>>
  */
-return [
+
+$moduleArray = [
     'slug_modules' => [
         'labels' => 'LLL:EXT:slug/Resources/Private/Language/locallang_module_category.xlf',
         'iconIdentifier' => 'module-category-slug',
         'position' => ['after' => 'web'],
-    ],
-    'slug_page' => [
-        'parent' => 'web',
-        'position' => ['after' => 'web_info'],
-        'access' => 'user,group',
-        'workspaces' => 'live',
-        'path' => '/module/slug/page',
-        'iconIdentifier' => 'module-slug',
-        'labels' => 'LLL:EXT:slug/Resources/Private/Language/locallang_module_page.xlf',
-        'extensionName' => 'Slug',
-        'controllerActions' => [
-            PageController::class => [
-                'page',
-            ],
-        ],
     ],
     'slug_list' => [
         'parent' => 'slug_modules',
@@ -42,17 +28,14 @@ return [
         'position' => ['before' => '*'],
         'access' => 'user,group',
         'workspaces' => 'live',
-        'path' => '/module/slug/list',
+        'path' => '/module/',
         'iconIdentifier' => 'module-slug',
         'labels' => 'LLL:EXT:slug/Resources/Private/Language/locallang_module_list.xlf',
-        'extensionName' => 'Slug',
+        'extensionName' => 'slug',
         'controllerActions' => [
-            PageController::class => [
+            SlugController::class => [
                 'list',
-                'tree'
-            ],
-            ExtensionController::class => [
-                'list'
+                'record'
             ],
         ],
         'moduleData' => [
@@ -60,3 +43,23 @@ return [
         ],
     ]
 ];
+
+if(ExtensionManagementUtility::isLoaded('slugpro')){
+    $moduleArray['slug_page'] = [
+        'parent' => 'web',
+        'position' => ['after' => 'web_info'],
+        'access' => 'user,group',
+        'workspaces' => 'live',
+        'path' => '/module/slug/',
+        'iconIdentifier' => 'module-slug',
+        'labels' => 'LLL:EXT:slug/Resources/Private/Language/locallang_module_page.xlf',
+        'extensionName' => 'slug',
+        'controllerActions' => [
+            SlugController::class => [
+                'page'
+            ],
+        ],
+    ];
+}
+
+return $moduleArray;

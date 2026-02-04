@@ -1,3 +1,50 @@
 <footer id="slug-footer" class="mt-5 text-center">
-    &copy; 2018-2025 by S. Köhler | <a href="#" data-bs-toggle="modal" data-bs-target="#modal-extension-info" class="link-primary"><i class="bi bi-info-circle"></i> {f:translate(key:'footer.about', extensionName: slug)}</a> | <a href="https://github.com/fullstackfreelancer/slug" target="_blank"><i class="bi bi-github"></i> {f:translate(key:'footer.docs', extensionName: slug)}</a>
+    &copy; 2018-2026 by S. Köhler @ kohlercode.com | <a class="btn-extension-info" style="cursor:pointer;"><core:icon identifier="actions-info-circle" size="small" /> {f:translate(key:'footer.about', extensionName: slug)}</a>
 </footer>
+
+<template id="extension-info-template">
+    <div class="p-3">
+        <div class="row g-3">
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bi-dollar-sign display-1 mb-2"></i>
+                        <h3><strong>{f:translate(key:'extension_info.support_development', extensionName: slug)}</strong></h3>
+                        <p>{f:translate(key:'extension_info.support_development_text', extensionName: slug)}</p>
+                        <a class="btn btn-warning btn-lg text-white" href="https://kohlercode.com/donate" target="_blank"><i class="bi bi-paypal"></i> {f:translate(key:'extension_info.support_development.donate', extensionName: slug)}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bi-github display-4 mb-2"></i>
+                        <h3><strong>{f:translate(key:'extension_info.code', extensionName: slug)}</strong></h3>
+                        <p>{f:translate(key:'extension_info.code_text', extensionName: slug)}</p>
+                        <a class="btn btn-warning btn-lg text-white" href="https://github.com/fullstackfreelancer/slug" target="_blank"><i class="bi bi-github"></i> GitHub Repository</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bi-alarm display-4 mb-2"></i>
+                        <h3><strong>{f:translate(key:'extension_info.issue', extensionName: slug)}</strong></h3>
+                        <p>{f:translate(key:'extension_info.issue_text', extensionName: slug)}</p>
+                        <a class="btn btn-warning btn-lg text-white" href="https://github.com/fullstackfreelancer/slug/issues" target="_blank"><i class="bi bi-github"></i> GitHub Issue Tracker</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bi-youtube display-4 mb-2"></i>
+                        <h3><strong>{f:translate(key:'extension_info.youtube', extensionName: slug)}</strong></h3>
+                        <p>{f:translate(key:'extension_info.youtube_text', extensionName: slug)}</p>
+                        <a class="btn btn-warning btn-lg text-white" href="https://www.youtube.com/channel/UC_PtQESDvj-GZNeo9LarRuA?sub_confirmation=1" target="_blank" class="btn btn-warning btn-lg text-light"><i class="bi bi-youtube"></i> TYPO3 Freelancer Channel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

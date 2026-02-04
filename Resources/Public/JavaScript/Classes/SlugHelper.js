@@ -1,6 +1,10 @@
 export class SlugHelper{
 
-    static loadList(table, titleField, slugField, page, filterFields = null, callbackFunction = null) {
+    static loadList(table, titleField, slugField, page, filterFields = null, callbackFunction = null, ajaxRoute = 'slug_list', pid = null) {
+
+        console.log("table: " + table)
+        console.log("ajaxRoute: " + ajaxRoute)
+        console.log("filterFields: " + filterFields)
 
         const orderby = filterFields !== null ? filterFields.orderby.value : 'crdate';
         const order = filterFields !== null ? filterFields.order.value : 'DESC';
@@ -8,15 +12,40 @@ export class SlugHelper{
         const key = filterFields !== null ? filterFields.key.value : '';
         const status = filterFields !== null ? filterFields.status.value : 'visible';
 
-        const url = top.TYPO3.settings.ajaxUrls['slug_list'] +
-                  //'&site=' + encodeURIComponent(site) +
-                  '&table=' + encodeURIComponent(table) +
-                  '&page=' + encodeURIComponent(page) +
-                  '&orderby=' + encodeURIComponent(orderby) +
-                  '&order=' + encodeURIComponent(order) +
-                  '&maxentries=' + encodeURIComponent(maxentries) +
-                  '&key=' + encodeURIComponent(key) +
-                  '&status=' + encodeURIComponent(status);
+        // 1. Get the base AJAX URL
+        const baseUrl = top.TYPO3.settings.ajaxUrls[ajaxRoute];
+        const params = new URLSearchParams();
+
+        // 2. Add the PID only if it's not null or undefined
+        if (pid !== null && typeof pid !== 'undefined') {
+            params.append('pid', pid);
+        }
+
+        // 3. Add the rest of your parameters
+        params.append('table', table);
+        params.append('slug', slugField);
+        params.append('title', titleField);
+        params.append('page', page);
+        params.append('orderby', orderby);
+        params.append('order', order);
+        params.append('maxentries', maxentries);
+        params.append('key', key);
+        params.append('status', status);
+
+        // 4. Combine into the final URL
+        const url = baseUrl + (baseUrl.includes('?') ? '&' : '?') + params.toString();
+
+        /* const url = top.TYPO3.settings.ajaxUrls[ajaxRoute] +
+                '&pid=' + encodeURIComponent(pid) +
+                '&table=' + encodeURIComponent(table) +
+                '&slug=' + encodeURIComponent(slugField) +
+                '&title=' + encodeURIComponent(titleField) +
+                '&page=' + encodeURIComponent(page) +
+                '&orderby=' + encodeURIComponent(orderby) +
+                '&order=' + encodeURIComponent(order) +
+                '&maxentries=' + encodeURIComponent(maxentries) +
+                '&key=' + encodeURIComponent(key) +
+                '&status=' + encodeURIComponent(status); */
 
         const req = new XMLHttpRequest();
         const target = document.getElementById('slug-list-wrap');
@@ -40,7 +69,7 @@ export class SlugHelper{
         req.send();
     }
 
-    static initFilterFields(callbackFunction,recordTable){
+    static initFilterFields(callbackFunction,recordTable,ajaxRoute){
 
         const filterFields = {
             'site': document.getElementById('filter_site'),
@@ -56,23 +85,41 @@ export class SlugHelper{
         // }.bind(this));
 
         filterFields.maxentries.addEventListener('change',function(e){
-            this.loadList(recordTable,'title','slug',0,filterFields,callbackFunction);
+            this.loadList(recordTable,'title','slug',0,filterFields,callbackFunction,ajaxRoute);
         }.bind(this));
 
-        filterFields.key.addEventListener('input',function(e){
-            this.loadList(recordTable,'title','slug',0,filterFields,callbackFunction);
+        let searchTimeout;
+
+        filterFields.key.addEventListener('input', function(e) {
+            // Clear the previous timer every time a new character is typed
+            clearTimeout(searchTimeout);
+
+            const searchTerm = e.target.value;
+
+            // 1. Check for the 3-character minimum
+            if (searchTerm.length >= 3) {
+                // 2. Set a 400ms delay to wait for the user to stop typing
+                searchTimeout = setTimeout(() => {
+                    this.loadList(recordTable, 'title', 'slug', 0, filterFields, callbackFunction,ajaxRoute);
+                }, 600);
+            } 
+            
+            // Optional: Reload the full list if the field is cleared
+            if (searchTerm.length === 0) {
+                this.loadList(recordTable, 'title', 'slug', 0, filterFields, callbackFunction,ajaxRoute);
+            }
         }.bind(this));
 
         filterFields.orderby.addEventListener('change',function(e){
-            this.loadList(recordTable,'title','slug',0,filterFields,callbackFunction);
+            this.loadList(recordTable,'title','slug',0,filterFields,callbackFunction,ajaxRoute);
         }.bind(this));
 
         filterFields.order.addEventListener('change',function(e){
-            this.loadList(recordTable,'title','slug',0,filterFields,callbackFunction);
+            this.loadList(recordTable,'title','slug',0,filterFields,callbackFunction,ajaxRoute);
         }.bind(this));
 
         filterFields.status.addEventListener('change',function(e){
-            this.loadList(recordTable,'title','slug',0,filterFields,callbackFunction);
+            this.loadList(recordTable,'title','slug',0,filterFields,callbackFunction,ajaxRoute);
         }.bind(this));
     }
 
@@ -241,10 +288,10 @@ export class SlugHelper{
         if(obj_exists){ obj.innerHTML = url; }
     }
 
-    static updatePageTitle(titleField){
-        const newTitle = titleField.textContent;
-        const pageUid = titleField.getAttribute('data-pageuid');
-        const originalText = titleField.getAttribute('data-originaltext');
+    static updatePageTitle(targetField){
+        const newTitle = targetField.textContent;
+        const pageUid = targetField.getAttribute('data-pageuid');
+        const originalText = targetField.getAttribute('data-originaltext');
 
         if (newTitle === originalText.trim()) return;
 
@@ -265,13 +312,46 @@ export class SlugHelper{
             else if (data.status === 'error') {
                 top.TYPO3.Notification.error('Ooops...',  data.status);
             }
-            titleField.setAttribute('contenteditable','false');
+            targetField.setAttribute('contenteditable','false');
         })
         .catch(error => {
             top.TYPO3.Notification.error('Ooops...', error);
-            titleField.setAttribute('contenteditable','false');
+            targetField.setAttribute('contenteditable','false');
         });
+    }
 
+
+    static updateRecordTitle(targetField){
+        const newTitle = targetField.textContent;
+        const recordUid = targetField.getAttribute('data-uid');
+        const originalText = targetField.getAttribute('data-originaltext');
+        const table = targetField.getAttribute('data-table');
+
+        if (newTitle === originalText.trim()) return;
+
+        const params = new URLSearchParams({ title: newTitle, uid: recordUid, table: table });
+
+        fetch(TYPO3.settings.ajaxUrls['slug_update_record_title'] + '&' + params.toString(), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success'){
+                top.TYPO3.Notification.success('Record title updated', data.status);
+            }
+            else if (data.status === 'error') {
+                top.TYPO3.Notification.error('Ooops...',  data.status);
+            }
+            targetField.setAttribute('contenteditable','false');
+        })
+        .catch(error => {
+            top.TYPO3.Notification.error('Ooops...', error);
+            targetField.setAttribute('contenteditable','false');
+        });
     }
 
 }
