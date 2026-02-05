@@ -36,6 +36,7 @@ class HelperUtility {
             return $EM_CONF[$extKey];
         }
         else{
+            print_r('File does not exist: '.$filePath);
             return false;
         }
 

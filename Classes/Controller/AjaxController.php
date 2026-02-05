@@ -5,25 +5,19 @@
 
 declare(strict_types=1);
 namespace KOHLERCODE\Slug\Controller;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use KOHLERCODE\Slug\Utility\HelperUtility;
 use KOHLERCODE\Slug\Domain\Repository\PageRepository;
 use KOHLERCODE\Slug\Domain\Repository\RecordRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Http\JsonResponse;
-use TYPO3\CMS\Core\View\ViewFactoryData;
 use TYPO3\CMS\Core\View\ViewFactoryInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
@@ -202,31 +196,39 @@ class AjaxController extends ActionController {
     public function generateRecordSlug(\Psr\Http\Message\ServerRequestInterface $request)
     {
         $queryParams = $request->getQueryParams();
-        $uid = $queryParams['uid'];
+        $uid = (int)$queryParams['uid'];
         $table = $queryParams['table'];
         $slugField  = $queryParams['slugField'];
         $titleField  = $queryParams['titleField'];
 
         $fieldConfig = $GLOBALS['TCA'][$table]['columns'][$slugField]['config'];
         $slugHelper = GeneralUtility::makeInstance(SlugHelper::class, $table, $slugField, $fieldConfig);
-        $this->helper = GeneralUtility::makeInstance(HelperUtility::class);
-
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+        
+        // Get QueryBuilder for the specific table
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
         $queryBuilder->getRestrictions()->removeAll();
-        $statement = $queryBuilder
+        
+        $result = $queryBuilder
             ->select('*')
             ->from($table)
             ->where(
-                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($queryParams['uid'],\PDO::PARAM_INT))
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT))
             )
             ->executeQuery();
-        while ($row = $statement->fetch()) {
+
+        // Fetch the single row
+        $row = $result->fetchAssociative();
+        $slugGenerated = '';
+
+        if ($row && isset($row[$titleField])) {
             $slugGenerated = $slugHelper->sanitize($row[$titleField]);
-            break;
         }
 
-        $responseInfo['status'] = $statement;
-        $responseInfo['slug'] = $slugGenerated;
+        $responseInfo = [
+            'success' => (bool)$row,
+            'slug' => $slugGenerated
+        ];
+        
         return new JsonResponse($responseInfo);
     }
 

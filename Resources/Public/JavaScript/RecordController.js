@@ -13,10 +13,10 @@ const pid = container.dataset.pid || 0;
 SlugHelper.initFilterFields(loadHTML,recordTable,'slug_record');
 SlugHelper.loadList(recordTable,titleField,slugField,0,null,loadHTML,'slug_record',pid);
 
-
 function loadHTML(responseText) {
     document.getElementById('slug-list-wrap').innerHTML = responseText;
     initInterface();
+    console.log('initInterface: success');
 }
 
 function initInterface(){
@@ -32,6 +32,7 @@ function initInterface(){
         const uid = row.getAttribute('data-record');
         const sitePrefix = row.getAttribute('data-siteprefix');
         const record_title = row.querySelector('.record-title');
+        const table = row.getAttribute('data-table');
 
         record_title.addEventListener('dblclick', function () {
             record_title.setAttribute('contenteditable', 'true');
@@ -53,7 +54,8 @@ function initInterface(){
 
         if(button_generate){
             button_generate.addEventListener('click',function(e){
-                SlugHelper.generateSlug(uid,sitePrefix,'page');
+                console.log([uid,sitePrefix,table]);
+                SlugHelper.generateSlug(uid,sitePrefix,table);
             });
         }
 

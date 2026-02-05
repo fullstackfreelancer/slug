@@ -15,7 +15,9 @@
             </f:link.action>
             <f:for each="{additionalTables}" as="table" key="label">
                 <f:link.action action="record" controller="Slug" class="btn btn-default" arguments="{table:label}">
-                    <core:icon title="Open actions menu" identifier="preciouscanine-svgicon" />
+                    <f:if condition="{table.icon}">
+                        <core:icon title="Open actions menu" identifier="{table.icon}" />
+                    </f:if>
                     {table.label}
                 </f:link.action>
             </f:for>
