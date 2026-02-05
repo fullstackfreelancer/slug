@@ -1,18 +1,12 @@
 <?php
 namespace KOHLERCODE\Slug\Domain\Repository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use KOHLERCODE\Slug\Utility\HelperUtility;
-use TYPO3\CMS\Core\Site\SiteFinder;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
-use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Repository for managing custom extbase records with extended slug and language features.
- *
  * Provides methods to retrieve page data, handle translations, and manage slug states.
  *
  * @package KOHLERCODE\Slug\Domain\Repository
@@ -82,13 +76,13 @@ class RecordRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                 't',
                 $queryBuilder->expr()->and(
                     $queryBuilder->expr()->eq('t.l10n_parent', $queryBuilder->quoteIdentifier('p.uid')),
-                    $queryBuilder->expr()->gt('t.sys_language_uid', $queryBuilder->createNamedParameter(0, \TYPO3\CMS\Core\Database\Connection::PARAM_INT))
+                    $queryBuilder->expr()->gt('t.sys_language_uid', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
                 )
             )
             // Only fetch default language records as parents
             ->where(
-                $queryBuilder->expr()->eq('p.sys_language_uid', $queryBuilder->createNamedParameter(0, \TYPO3\CMS\Core\Database\Connection::PARAM_INT)),
-                $queryBuilder->expr()->eq('p.deleted', $queryBuilder->createNamedParameter(0, \TYPO3\CMS\Core\Database\Connection::PARAM_INT))
+                $queryBuilder->expr()->eq('p.sys_language_uid', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)),
+                $queryBuilder->expr()->eq('p.deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
             )
             ->setMaxResults($maxitems)
             //->orderBy('p.' . ($orderby ?: 'crdate'), $order ?: 'DESC');
@@ -124,6 +118,7 @@ class RecordRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                     'hidden' => $row['hidden'],
                     'deleted' => $row['deleted'],
                     'table' => $tableName,
+                    'slugField' => $slugField,
                     'icon' => '<i class="bi-file-earmark-fill"></i>',
                     '_translations' => []
                 ];
@@ -138,6 +133,7 @@ class RecordRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                     'l10n_parent' => $row['l10n_parent'],
                     'icon' => '<i class="bi-file-earmark"></i>',
                     'table' => $tableName,
+                    'slugField' => $slugField,
                 ];
             }
         }

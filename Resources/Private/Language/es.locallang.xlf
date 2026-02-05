@@ -116,7 +116,7 @@
 				<target>Por favor, introduzca un Slug!</target>
 			</trans-unit>
 			<trans-unit id="notes.error.ajax">
-				<target>Se ha producido un error con jQuery y Ajax, consulte Salida de script: </target>
+				<target>Se ha producido un error con JavaScript y Ajax, consulte Salida de script: </target>
 			</trans-unit>
 
 

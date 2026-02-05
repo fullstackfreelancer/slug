@@ -127,8 +127,27 @@ export class SlugHelper{
         return '<div class="d-flex justify-content-center mb-4">Loading...</div>';
     }
 
-    static async saveSlug(uid, slug, sitePrefix, type) {
-        const url = TYPO3.settings.ajaxUrls['slug_save_page'] + '&slug=' + encodeURIComponent(slug) + '&uid=' + uid;
+    static async saveSlug(uid, slug, sitePrefix, table='pages', slugField='slug') {
+    
+        const isRecord = (table !== 'pages' && table !== undefined);
+        const routeKey = isRecord ? 'slug_save_record' : 'slug_save_page';
+        const baseUrl = TYPO3.settings.ajaxUrls[routeKey];
+
+        // 1. Initialize with common parameters
+        const params = new URLSearchParams({
+            slug: slug,
+            uid: uid
+        });
+
+        // 2. Conditionally add extra parameters for records
+        if (isRecord) {
+            params.append('table', table);
+            params.append('slugField', slugField);
+        }
+
+        // 3. Combine into the final URL
+        const url = `${baseUrl}&${params.toString()}`;
+
         const slugRow = document.getElementById('record-' + uid);
         const slugInputField = slugRow.querySelector('.slug-input');
         const slugPreview = slugRow.querySelector('.slug-preview');
@@ -152,7 +171,9 @@ export class SlugHelper{
             if (data.status === '1') {
                 top.TYPO3.Notification.success(window.slugNotes['notes.success.saved'], data.slug);
                 slugRow.classList.remove('not-saved');
-                slugPreview.setAttribute('href', sitePrefix + data.slug);
+                if(slugPreview){
+                    slugPreview.setAttribute('href', sitePrefix + data.slug);
+                }
             } else {
                 top.TYPO3.Notification.info(window.slugNotes['notes.info.nochanges'], data.slug);
             }
@@ -184,7 +205,7 @@ export class SlugHelper{
             const slugInput = record.querySelector('.slug-input');
             const slug = slugInput.value;
             const sitePrefix = record.dataset.sitePrefix || '';
-            await this.saveSlug(uid, slug, sitePrefix, 'page');
+            await this.saveSlug(uid, slug, sitePrefix, 'pages');
             savedCount++;
         }
 

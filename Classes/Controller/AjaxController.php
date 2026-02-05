@@ -140,12 +140,14 @@ class AjaxController extends ActionController {
         $statement = $queryBuilder
             ->update($table)
             ->where(
-                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid,\PDO::PARAM_INT))
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid,Connection::PARAM_INT))
             )
-            ->set($slugField,$slug) // Function "createNamedParameter" is NOT needed here!
+            ->set($slugField,$slug)
             ->executeQuery();
-        $responseInfo['status'] = $statement;
-        $responseInfo['slug'] = $slug;
+        $responseInfo = [
+            'status' => $statement ? '1' : '0',
+            'slug' => $slug
+        ];
         return new JsonResponse($responseInfo);
     }
 
@@ -241,8 +243,9 @@ class AjaxController extends ActionController {
     public function slugInfo(\Psr\Http\Message\ServerRequestInterface $request)
     {
         $queryParams = $request->getQueryParams();
-        $this->helper = GeneralUtility::makeInstance(HelperUtility::class);
+        //$this->helper = GeneralUtility::makeInstance(HelperUtility::class);
         $root = BackendUtility::getRecord('pages',$queryParams['uid']);
+        $site = $this->helper->getSiteByPageUid($queryParams['uid']);
         $languages = $this->helper->getLanguages();
         $extensionUtility= GeneralUtility::makeInstance(ExtensionManagementUtility::class);
         if($extensionUtility::isLoaded('slugpro')){
@@ -259,14 +262,14 @@ class AjaxController extends ActionController {
         $view->assign('title',$root['seo_title'] ?: $root['title']);
         $view->assign('description',$root['description'] ?: 'n/a');
         $view->assign('slugpro',$slugpro);
-        $view->assign('favicon','<img src="https://bearing-sale.com/favicon.ico">');
-        $view->assign('sitename','kohlercode.com');
+        $view->assign('sitename',$site['base']);
         $translation = [
             'pro' => [
                 'feature_note' => $this->helper->getLangKey('pro.feature_note')
             ]
         ];
         $view->assign('translate',$translation);
+        //print_r($site);
         return new HtmlResponse($view->render('SlugInfo'));
     }
 

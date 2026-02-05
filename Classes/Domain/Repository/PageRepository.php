@@ -91,7 +91,7 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
         return $row;
     }
 
-    public function getPageDataAndTranslatedChildren($pageUid)
+    /* public function getPageDataAndTranslatedChildren($pageUid)
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
         $queryBuilder->getRestrictions()->removeAll();
@@ -131,27 +131,7 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
         }
 
         return $pages;
-    }
-
-    public function getTranslatedPages(int $pageUid): array
-    {
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable('pages');
-
-        $queryBuilder = $connection->createQueryBuilder();
-
-        return $queryBuilder
-            ->select('*')
-            ->from('pages')
-            ->where(
-                $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageUid, Connection::PARAM_INT)),
-                $queryBuilder->expr()->eq('deleted', 0)
-            )
-            ->orderBy('sys_language_uid', 'ASC')
-            ->executeQuery()
-            ->fetchAllAssociative();
-    }
-
+    } */
 
     /**
      * function getPageDataForList

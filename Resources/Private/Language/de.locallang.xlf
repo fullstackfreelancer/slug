@@ -115,7 +115,7 @@
 				<target>Bitte einen Slug eingeben!</target>
 			</trans-unit>
             <trans-unit id="notes.error.ajax">
-				<target>Mit jQuery und Ajax ist ein Fehler aufgetreten, siehe Skriptausgabe: </target>
+				<target>Mit JavaScript und Ajax ist ein Fehler aufgetreten, siehe Skriptausgabe: </target>
 			</trans-unit>
 
 

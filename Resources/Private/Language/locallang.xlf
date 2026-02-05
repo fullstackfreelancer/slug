@@ -118,7 +118,7 @@
 				<source>Please enter a slug</source>
 			</trans-unit>
             <trans-unit id="notes.error.ajax">
-				<source>Something went wrong with jQuery and Ajax, please see script output: </source>
+				<source>Something went wrong with JavaScript and Ajax, please see script output: </source>
 			</trans-unit>
             <trans-unit id="notes.generator.after_generating">
 				<source>The slug has been generated, but not saved yet! Please don't forget to click on the save button if you want so save this version of the slug! You can also set 'autoSave' to enable automatic saving of the slug, after generating.</source>

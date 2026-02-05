@@ -33,6 +33,7 @@ function initInterface(){
         const sitePrefix = row.getAttribute('data-siteprefix');
         const record_title = row.querySelector('.record-title');
         const table = row.getAttribute('data-table');
+        const slugField = row.getAttribute('data-slug-field');
 
         record_title.addEventListener('dblclick', function () {
             record_title.setAttribute('contenteditable', 'true');
@@ -48,7 +49,7 @@ function initInterface(){
         if(button_save){
             button_save.addEventListener('click',function(e){
                 const slug = row.querySelector('input[type="text"]').value;
-                SlugHelper.saveSlug(uid,slug,sitePrefix,'page');
+                SlugHelper.saveSlug(uid,slug,sitePrefix,table,slugField);
             });
         }
 
@@ -61,7 +62,7 @@ function initInterface(){
 
         if(button_info){
             button_info.addEventListener('click',function(e){
-                SlugHelper.loadSlugInfo(uid,'page');
+                SlugHelper.loadSlugInfo(uid,table);
             });
         }
 

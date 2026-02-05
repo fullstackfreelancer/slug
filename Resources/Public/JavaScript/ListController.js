@@ -41,7 +41,7 @@ function initInterface(){
         if(button_save){
             button_save.addEventListener('click',function(e){
                 const slug = row.querySelector('input[type="text"]').value;
-                SlugHelper.saveSlug(uid,slug,sitePrefix,'page');
+                SlugHelper.saveSlug(uid,slug,sitePrefix,'pages');
             });
         }
 

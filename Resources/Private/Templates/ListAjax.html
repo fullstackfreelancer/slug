@@ -6,10 +6,11 @@
 
     <f:if condition="{page._translations}">
         <f:for each="{page._translations}" as="page">
-            <f:render section="entry" arguments="{page:page,indent:'ps-0'}"/>
+            <f:render section="entry" arguments="{page:page,indent:'ps-3'}"/>
         </f:for>
     </f:if>
 
+    <f:comment>
     <f:if condition="{page._children}">
         <f:for each="{page._children}" as="page">
             <f:render section="entry" arguments="{page:page,indent:'ps-4'}"/>
@@ -20,6 +21,7 @@
             </f:if>
         </f:for>
     </f:if>
+    </f:comment>
 
 </f:for>
 

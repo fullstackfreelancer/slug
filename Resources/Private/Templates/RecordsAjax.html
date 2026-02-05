@@ -9,6 +9,7 @@
         </f:for>
     </f:if>
 
+    <f:comment>
     <f:if condition="{record._children}">
         <f:for each="{record._children}" as="record">
             <f:render section="entry" arguments="{record:record,indent:'ps-4'}"/>
@@ -19,11 +20,12 @@
             </f:if>
         </f:for>
     </f:if>
+    </f:comment>
 
 </f:for>
 
 <f:section name="entry">
-    <div id="record-{record.uid}" data-locked="0" data-record="{record.uid}" data-siteprefix="0" data-table="{record.table}" class="slug-record px-2 mb-2 shadow shadow-sm">
+    <div id="record-{record.uid}" data-locked="0" data-record="{record.uid}" data-siteprefix="0" data-table="{record.table}" data-slug-field="{record.slugField}" class="slug-record px-2 mb-2 shadow shadow-sm">
         <div class="row">
             <div class="col-lg-6 d-flex align-items-center">
                 <div class="{indent}">
