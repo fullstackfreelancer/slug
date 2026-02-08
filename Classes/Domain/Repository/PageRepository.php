@@ -91,48 +91,6 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
         return $row;
     }
 
-    /* public function getPageDataAndTranslatedChildren($pageUid)
-    {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
-        $queryBuilder->getRestrictions()->removeAll();
-
-        $queryBuilder
-            ->select('*')
-            ->from('pages')
-            ->orderBy('l10n_parent','ASC')
-            ->where(
-                $queryBuilder->expr()->or(
-                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($pageUid, Connection::PARAM_INT)),
-                    $queryBuilder->expr()->and(
-                        $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageUid, Connection::PARAM_INT)),
-                        $queryBuilder->expr()->gt('l10n_parent', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
-                    )
-                )
-            );
-
-        $stmt = $queryBuilder->executeQuery();
-        $pages = $stmt->fetchAllAssociative();
-
-        foreach($pages as $key => $page){
-            $site = $this->helper->getSiteByPageUid($page['uid']);
-            $pages[$key]['site'] = $site;
-
-            // Default: no language found
-            $pages[$key]['language'] = null;
-
-            if (!empty($site['languages']) && isset($page['sys_language_uid'])) {
-                foreach ($site['languages'] as $language) {
-                    if ((int)$language['languageId'] === (int)$page['sys_language_uid']) {
-                        $pages[$key]['language'] = $language;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return $pages;
-    } */
-
     /**
      * function getPageDataForList
      */
