@@ -1,8 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [5.0.1] - 2026-02-05
-- Small bugfixes
+## [5.0.1] - 2026-02-08
+- General Bugfixes
+- Code cleaning
+- Code optimization
 
 ## [5.0.0] - 2026-02-05
 - New alpha version ready for testing
