@@ -1,4 +1,4 @@
-# ![](https://raw.githubusercontent.com/fullstackfreelancer/slug/refs/heads/master/Resources/Public/Icons/Extension.svg) slug - TYPO3 CMS Backend Module for better SEO
+# <img src="https://raw.githubusercontent.com/fullstackfreelancer/slug/refs/heads/master/Resources/Public/Icons/Extension.svg" width="25" height="25"> slug - TYPO3 CMS Backend Module for better SEO
 
 Official Repository of the 'slug' Backend Module for TYPO3 9.5, 10, 11, 12 and soon 13.4.0
 
