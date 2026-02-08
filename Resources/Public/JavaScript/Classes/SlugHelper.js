@@ -35,18 +35,6 @@ export class SlugHelper{
         // 4. Combine into the final URL
         const url = baseUrl + (baseUrl.includes('?') ? '&' : '?') + params.toString();
 
-        /* const url = top.TYPO3.settings.ajaxUrls[ajaxRoute] +
-                '&pid=' + encodeURIComponent(pid) +
-                '&table=' + encodeURIComponent(table) +
-                '&slug=' + encodeURIComponent(slugField) +
-                '&title=' + encodeURIComponent(titleField) +
-                '&page=' + encodeURIComponent(page) +
-                '&orderby=' + encodeURIComponent(orderby) +
-                '&order=' + encodeURIComponent(order) +
-                '&maxentries=' + encodeURIComponent(maxentries) +
-                '&key=' + encodeURIComponent(key) +
-                '&status=' + encodeURIComponent(status); */
-
         const req = new XMLHttpRequest();
         const target = document.getElementById('slug-list-wrap');
         target.innerHTML = this.preloader(); // Optional: keep if you want to show a loading indicator
