@@ -1,28 +1,22 @@
-# <img src="https://raw.githubusercontent.com/fullstackfreelancer/slug/refs/heads/master/Resources/Public/Icons/Extension.svg" width="25" height="25"> slug - TYPO3 CMS Backend Module for better SEO
+# <img src="https://raw.githubusercontent.com/fullstackfreelancer/slug/refs/heads/master/Resources/Public/Icons/Extension.svg" width="25" height="25"> slug - Mass editing of URLs for TYPO3 CMS
 
-Official Repository of the 'slug' Backend Module for TYPO3 9.5, 10, 11, 12 and soon 13.4.0
+Official Repository of the 'slug' Backend Module for **TYPO3 version 14**.
 
-The Slug backend module is designed to help manage large amounts of URL-slugs for pages and extension records. Currently, it provides a simple list for pages and custom records, which can be filtered with different parameters. Slugs can be edited and saved quickly and efficiently. The modules regenerate or save **all slugs of the current list view** with just one click. I have tested the functionality with 500+ empty news records so far, without any problem.
+The Slug backend module is designed to help manage large amounts of URL-slugs for pages and extension records. It provides a simple list for pages and custom records, which can be filtered with different parameters. Page and record URLs can be edited and saved quickly and efficiently. The module generates or saves **all slugs of the current list view** with just one click.
 
-## STABLE VERSION COMING SOON
-
-Your ideas to improve and extend the slug module are more than welcome: [send a message](https://kohlercode.com/contact)
+## LIKE THIS TOOL? SUPPORT DEVELOPMENT!
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/fullstackfreelancer/25)
 
-## FEATURES
+Your ideas to improve and extend the slug module are more than welcome: [send a message](https://kohlercode.com/contact)
 
-* Add custom records of your extensions via $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['slug'] (see manual below)
-* Quickly edit, save and regenerate slugs for pages and other record types (new in Version 2)
-* Mass generation and storage of slugs
+## FEATURES LIST
+
+* Edit custom extbase records (see manual below)
+* Quickly mass edit, save and regenerate URLs
 * List views filterable with different parameters
-* Search engine preview for pages, displays the updated slug as you type
-* Uses TYPO3 core slug generation functions
-
-## CHANGELOG
-
-See the changelog for more details:
-https://github.com/fullstackfreelancer/slug/blob/master/CHANGELOG.md
+* Search engine preview for pages
+* SEO Module (currently beeing developed)
 
 ## USAGE
 
@@ -46,7 +40,11 @@ Very important to know:
 
 Here's an example code you will need to make a custom table work.
 ```php
-# Global extension configuration
+/*
+Add this to your global system configuration,
+ideally in the file "typo3conf/system/additional.php"
+*/
+
 <?php
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['slug'] = [
     'settings'=> [
@@ -70,10 +68,15 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['slug'] = [
 
 This part will be updated soon, since the extension has been updated recently.
 
-## Want to report an issue?
+## REPORT ISSUES
 
 https://github.com/fullstackfreelancer/slug/issues
 
-## All other requests
+## ALL OTHER REQUESTS
 
 **Contact:** https://kohlercode.com/contact
+
+## CHANGELOG
+
+See the changelog for more details:
+https://github.com/fullstackfreelancer/slug/blob/master/CHANGELOG.md
