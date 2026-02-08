@@ -1,22 +1,29 @@
 # <img src="https://raw.githubusercontent.com/fullstackfreelancer/slug/refs/heads/master/Resources/Public/Icons/Extension.svg" width="25" height="25"> slug - Mass editing of URLs for TYPO3 CMS
 
-Official Repository of the 'slug' Backend Module for **TYPO3 version 14**.
+This TYPO3 backend module helps editors and integrators manage URL slugs
+efficiently across pages and records. It is designed for SEO-friendly
+URLs, bulk operations, and clean editorial workflows.
 
-The Slug backend module is designed to help manage large amounts of URL-slugs for pages and extension records. It provides a simple list for pages and custom records, which can be filtered with different parameters. Page and record URLs can be edited and saved quickly and efficiently. The module generates or saves **all slugs of the current list view** with just one click.
-
-## LIKE THIS TOOL? SUPPORT DEVELOPMENT!
+## LIKE IT? SUPPORT DEVELOPMENT!
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/fullstackfreelancer/25)
 
 Your ideas to improve and extend the slug module are more than welcome: [send a message](https://kohlercode.com/contact)
 
+## WHO IS THIS FOR?
+
+- TYPO3 integrators and developers
+- SEO-focused projects with many pages or records
+- Editors who need bulk slug operations
+
 ## FEATURES LIST
 
-* Edit custom extbase records (see manual below)
-* Quickly mass edit, save and regenerate URLs
+* Manage URLs for pages and database records
+* Bulk edit and mass save URL values
 * List views filterable with different parameters
 * Search engine preview for pages
 * SEO Module (currently beeing developed)
+* Backend-only, no frontend impact
 
 ## USAGE
 
