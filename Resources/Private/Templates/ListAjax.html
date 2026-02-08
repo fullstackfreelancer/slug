@@ -10,19 +10,6 @@
         </f:for>
     </f:if>
 
-    <f:comment>
-    <f:if condition="{page._children}">
-        <f:for each="{page._children}" as="page">
-            <f:render section="entry" arguments="{page:page,indent:'ps-4'}"/>
-            <f:if condition="{page._translations}">
-                <f:for each="{page._translations}" as="page">
-                    <f:render section="entry" arguments="{page:page,indent:'ps-4'}"/>
-                </f:for>
-            </f:if>
-        </f:for>
-    </f:if>
-    </f:comment>
-
 </f:for>
 
 <f:section name="entry">
