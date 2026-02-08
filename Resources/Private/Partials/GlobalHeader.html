@@ -10,7 +10,7 @@
             <f:link.action action="list" controller="Slug" class="btn btn-default">
                 <i class="bi bi-file"></i> {f:translate(key:'button.pages', extensionName: slug)}
             </f:link.action>
-            <f:for each="{additionalTables}" as="table" key="label">
+            <f:for each="{extconf.additionalTables}" as="table" key="label">
                 <f:link.action action="record" controller="Slug" class="btn btn-default" arguments="{table:label}">
                     <f:if condition="{table.icon}">
                         <core:icon title="Open actions menu" identifier="{table.icon}" />

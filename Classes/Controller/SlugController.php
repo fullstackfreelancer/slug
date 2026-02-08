@@ -77,7 +77,7 @@ class SlugController extends ActionController {
      *
      * @var array
      */
-    protected $backendConfiguration;
+    protected $extensionConfiguration;
 
     /**
      * Module template instance for backend rendering.
@@ -97,8 +97,14 @@ class SlugController extends ActionController {
         private PageRepository $pageRepository,
     )
     {
-         $this->backendConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('slug');
-         $this->sites = GeneralUtility::makeInstance(SiteFinder::class)->getAllSites();
+        $extconfDefaults['settings'] = [
+            'defaultSortField' => 'uid',
+            'defaultSortby ' => 'DESC',
+            'defaultMaxEntries' => '20'
+        ];
+        $extconf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['slug'] ?? [];
+        $this->extensionConfiguration = array_replace($extconfDefaults, is_array($extconf) ? $extconf : []);
+        $this->sites = GeneralUtility::makeInstance(SiteFinder::class)->getAllSites();
     }
 
     /**
@@ -161,8 +167,7 @@ class SlugController extends ActionController {
         $pageData = $this->pageRepository->getPageDataAndTranslatedChildren($pageUid);
         $view = $this->initializeModuleTemplate($this->request);
         $view->assignMultiple([
-            'backendConfiguration' => $this->backendConfiguration,
-            'beLanguage' => $GLOBALS['BE_USER']->user['lang'],
+            'extconf' => $this->extensionConfiguration,
             'extEmconf' => $this->helper->getEmConfiguration('slug'),
             'page' => $pageData
         ]);
@@ -181,6 +186,7 @@ class SlugController extends ActionController {
     {
 
         $filterOptions['orderby'] = [
+            ['value' => 'uid', 'label' => $this->helper->getLangKey('filter.form.select.option.uid')],
             ['value' => 'crdate', 'label' => $this->helper->getLangKey('filter.form.select.option.creation_date')],
             ['value' => 'tstamp', 'label' => $this->helper->getLangKey('filter.form.select.option.tstamp')],
             ['value' => 'title', 'label' => $this->helper->getLangKey('filter.form.select.option.title')],
@@ -222,19 +228,14 @@ class SlugController extends ActionController {
 
         $view = $this->initializeModuleTemplate($this->request);
 
-        $globalAdditionalTables = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['slug']['additionalTables'] ?? [];
+        $additionalTables = $this->extensionConfiguration['additionalTables'] ?? [];
 
         //Assign variables to the view
         $view->assignMultiple([
-            'backendConfiguration' => $this->backendConfiguration,
-            'beLanguage' => $GLOBALS['BE_USER']->user['lang'],
+            'extconf' => $this->extensionConfiguration,
             'extEmconf' => $this->helper->getEmConfiguration('slug'),
             'filterOptions' => $filterOptions,
             'sites' => (array) $this->sites,
-            'languages' => $this->helper->getLanguages(),
-            'additionalTables' => $globalAdditionalTables,
-            'totalPages' => $this->pageRepository->findTotalPages(),
-            'pages' => $this->pageRepository->getPageDataForList(10,'','crdate','ASC'),
             'request' => $this->request->getArguments()
         ]);
 
@@ -251,12 +252,17 @@ class SlugController extends ActionController {
      */
     protected function recordAction(): ResponseInterface
     {
+        $view = $this->initializeModuleTemplate($this->request);
+        $additionalTables = $this->extensionConfiguration['additionalTables'] ?? [];
+        $table = $this->request->getArgument('table') ?? '';
+        $tableData = $additionalTables[$table];
 
         $filterOptions['orderby'] = [
+            ['value' => 'uid', 'label' => $this->helper->getLangKey('filter.form.select.option.uid')],
             ['value' => 'crdate', 'label' => $this->helper->getLangKey('filter.form.select.option.creation_date')],
             ['value' => 'tstamp', 'label' => $this->helper->getLangKey('filter.form.select.option.tstamp')],
             ['value' => 'title', 'label' => $this->helper->getLangKey('filter.form.select.option.title')],
-            ['value' => 'slug', 'label' => $this->helper->getLangKey('filter.form.select.option.slug')],
+            ['value' => $tableData['slugField'] ?? 'slug', 'label' => $this->helper->getLangKey('filter.form.select.option.slug')],
             ['value' => 'sys_language_uid', 'label' => $this->helper->getLangKey('filter.form.select.option.sys_language_uid')],
         ];
 
@@ -290,21 +296,13 @@ class SlugController extends ActionController {
             ['value' => '5000', 'label' => '5000']
         ];
 
-        $view = $this->initializeModuleTemplate($this->request);
-        $globalAdditionalTables = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['slug']['additionalTables'] ?? [];
-        $table = $this->request->getArgument('table') ?? '';
-        $tableData = $globalAdditionalTables[$table];
-
         //Assign variables to the view
         $view->assignMultiple([
-            'backendConfiguration' => $this->backendConfiguration,
-            'beLanguage' => $GLOBALS['BE_USER']->user['lang'],
+            'extconf' => $this->extensionConfiguration,
             'extEmconf' => $this->helper->getEmConfiguration('slug'),
             'filterOptions' => $filterOptions,
             'sites' => (array) $this->sites,
-            'languages' => $this->helper->getLanguages(),
             'request' => $this->request->getArguments(),
-            'additionalTables' => $globalAdditionalTables,
             'tableData' => $tableData
         ]);
 
