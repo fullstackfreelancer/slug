@@ -10,14 +10,9 @@
                 <h6>{f:translate(key:'filter.form.label.entries_per_page', extensionName: slug)}</h6>
                 <select class="form-select form-select-sm" id="filter_maxentries">
                     <f:for each="{filterOptions.maxentries}" as="entry">
-                        <f:if condition="{backendConfiguration.defaultMaxEntries} == {entry.value}">
-                            <f:then>
-                                <option value="{entry.value}" selected>{entry.label}</option>
-                            </f:then>
-                            <f:else>
-                                <option value="{entry.value}">{entry.label}</option>
-                            </f:else>
-                        </f:if>
+                        <option value="{entry.value}" {f:if(condition: '{entry.value} == {extconf.settings.defaultMaxEntries}', then: 'selected')}>
+                            {entry.label}
+                        </option>
                     </f:for>
                 </select>
             </div>
@@ -25,7 +20,9 @@
                 <h6>{f:translate(key:'filter.form.label.order_by', extensionName: slug)}</h6>
                 <select class="form-select form-select-sm" id="filter_orderby">
                     <f:for each="{filterOptions.orderby}" as="entry">
-                        <option value="p.{entry.value}">{entry.label}</option>
+                        <option value="p.{entry.value}" {f:if(condition: '{entry.value} == {extconf.settings.defaultSortfield}', then: 'selected')}>
+                            {entry.label}
+                        </option>
                     </f:for>
                 </select>
             </div>
@@ -33,7 +30,9 @@
                 <h6>{f:translate(key:'filter.form.label.order', extensionName: slug)}</h6>
                 <select class="form-select form-select-sm" id="filter_order">
                     <f:for each="{filterOptions.order}" as="entry">
-                        <option value="{entry.value}">{entry.label}</option>
+                        <option value="{entry.value}" {f:if(condition: '{entry.value} == {extconf.settings.defaultSortby}', then: 'selected')}>
+                            {entry.label}
+                        </option>
                     </f:for>
                 </select>
             </div>

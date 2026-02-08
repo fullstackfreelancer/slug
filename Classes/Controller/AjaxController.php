@@ -243,11 +243,8 @@ class AjaxController extends ActionController {
     public function slugInfo(\Psr\Http\Message\ServerRequestInterface $request)
     {
         $queryParams = $request->getQueryParams();
-        //$this->helper = GeneralUtility::makeInstance(HelperUtility::class);
         $root = BackendUtility::getRecord('pages',$queryParams['uid']);
         $site = $this->helper->getSiteByPageUid($queryParams['uid']);
-        $languages = $this->helper->getLanguages();
-        $extensionUtility= GeneralUtility::makeInstance(ExtensionManagementUtility::class);
         $view = $this->helper->createViewAndTemplatePaths('SlugInfo',$request);
         $view->assign('uid',$root['uid']);
         $view->assign('url',$this->helper->getAbsoluteUrl($root['uid']));
@@ -256,7 +253,6 @@ class AjaxController extends ActionController {
         $view->assign('sitename',$site['base']);
         $translation = ['feature_note' => $this->helper->getLangKey('feature_note')];
         $view->assign('translate',$translation);
-        //print_r($site);
         return new HtmlResponse($view->render('SlugInfo'));
     }
 

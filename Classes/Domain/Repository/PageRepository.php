@@ -1,14 +1,10 @@
 <?php
 namespace KOHLERCODE\Slug\Domain\Repository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use KOHLERCODE\Slug\Utility\HelperUtility;
 use TYPO3\CMS\Core\Site\SiteFinder;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
-use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Repository for managing page records with extended slug and language features.
@@ -98,9 +94,6 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
     {
 
         $helper = GeneralUtility::makeInstance(HelperUtility::class);
-        $output = [];
-        $totalRecords = $helper->getTotalRecords('pages');
-
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
         $queryBuilder->getRestrictions()->removeAll();
         $query = $queryBuilder
@@ -244,6 +237,52 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
             )
             ->set('title', $title)
             ->executeQuery();
+    }
+
+    /*
+    This function is used to get the data of a single page and its translations based on the page UID. 
+    It returns an array with the page data and its translations.
+    */
+    public function getPageDataAndTranslatedChildren($pageUid)
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('pages');
+        $queryBuilder->getRestrictions()->removeAll();
+
+        $queryBuilder
+            ->select('*')
+            ->from('pages')
+            ->orderBy('l10n_parent','ASC')
+            ->where(
+                $queryBuilder->expr()->or(
+                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($pageUid, Connection::PARAM_INT)),
+                    $queryBuilder->expr()->and(
+                        $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageUid, Connection::PARAM_INT)),
+                        $queryBuilder->expr()->gt('l10n_parent', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
+                    )
+                )
+            );
+
+        $stmt = $queryBuilder->executeQuery();
+        $pages = $stmt->fetchAllAssociative();
+
+        foreach($pages as $key => $page){
+            $site = $this->helper->getSiteByPageUid($page['uid']);
+            $pages[$key]['site'] = $site;
+
+            // Default: no language found
+            $pages[$key]['language'] = null;
+
+            if (!empty($site['languages']) && isset($page['sys_language_uid'])) {
+                foreach ($site['languages'] as $language) {
+                    if ((int)$language['languageId'] === (int)$page['sys_language_uid']) {
+                        $pages[$key]['language'] = $language;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $pages;
     }
 
 }
