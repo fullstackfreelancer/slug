@@ -5,22 +5,9 @@
 
     <f:if condition="{record._translations}">
         <f:for each="{record._translations}" as="record">
-            <f:render section="entry" arguments="{record:record,indent:'ps-2'}"/>
+            <f:render section="entry" arguments="{record:record,indent:'ps-3'}"/>
         </f:for>
     </f:if>
-
-    <f:comment>
-    <f:if condition="{record._children}">
-        <f:for each="{record._children}" as="record">
-            <f:render section="entry" arguments="{record:record,indent:'ps-4'}"/>
-            <f:if condition="{record._translations}">
-                <f:for each="{record._translations}" as="t_record">
-                    <f:render section="entry" arguments="{record:t_record,indent:'ps-4'}"/>
-                </f:for>
-            </f:if>
-        </f:for>
-    </f:if>
-    </f:comment>
 
 </f:for>
 
