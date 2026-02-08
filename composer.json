@@ -1,6 +1,6 @@
 {
     "name": "kohlercode/slug",
-    "description": "Slug - Helps you managing the URL slugs of your TYPO3 site",
+    "description": "Slug - TYPO3 backend module for efficient management of URL slugs across pages and records, focused on SEO, bulk operations, and editorial productivity.",
     "type": "typo3-cms-extension",
     "license": "GPL-3.0",
     "require": {
