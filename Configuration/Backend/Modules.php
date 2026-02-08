@@ -28,7 +28,7 @@ $moduleArray = [
         'position' => ['before' => '*'],
         'access' => 'user,group',
         'workspaces' => 'live',
-        'path' => '/module/',
+        'path' => '/slug/list/',
         'iconIdentifier' => 'module-slug',
         'labels' => 'LLL:EXT:slug/Resources/Private/Language/locallang_module_list.xlf',
         'extensionName' => 'slug',
@@ -41,16 +41,13 @@ $moduleArray = [
         'moduleData' => [
             'language' => 0,
         ],
-    ]
-];
-
-if(ExtensionManagementUtility::isLoaded('slugpro')){
-    $moduleArray['slug_page'] = [
+    ],
+    'slug_page' => [
         'parent' => 'web',
         'position' => ['after' => 'web_info'],
         'access' => 'user,group',
         'workspaces' => 'live',
-        'path' => '/module/slug/',
+        'path' => '/slug/page/',
         'iconIdentifier' => 'module-slug',
         'labels' => 'LLL:EXT:slug/Resources/Private/Language/locallang_module_page.xlf',
         'extensionName' => 'slug',
@@ -59,7 +56,7 @@ if(ExtensionManagementUtility::isLoaded('slugpro')){
                 'page'
             ],
         ],
-    ];
-}
+    ]
+];
 
 return $moduleArray;
