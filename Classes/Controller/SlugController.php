@@ -220,14 +220,6 @@ class SlugController extends ActionController {
             ['value' => '5000', 'label' => '5000']
         ];
 
-        // Check if slugpro is loaded
-        if(ExtensionManagementUtility::isLoaded('slugpro')){
-            $slugpro = $this->helper->getEmConfiguration('slugpro');
-        }
-        else{
-            $slugpro = FALSE;
-        }
-
         $view = $this->initializeModuleTemplate($this->request);
 
         $globalAdditionalTables = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['slug']['additionalTables'] ?? [];
@@ -240,7 +232,6 @@ class SlugController extends ActionController {
             'filterOptions' => $filterOptions,
             'sites' => (array) $this->sites,
             'languages' => $this->helper->getLanguages(),
-            'slugpro' => $slugpro,
             'additionalTables' => $globalAdditionalTables,
             'totalPages' => $this->pageRepository->findTotalPages(),
             'pages' => $this->pageRepository->getPageDataForList(10,'','crdate','ASC'),
@@ -299,14 +290,6 @@ class SlugController extends ActionController {
             ['value' => '5000', 'label' => '5000']
         ];
 
-        // Check if slugpro is loaded
-        if(ExtensionManagementUtility::isLoaded('slugpro')){
-            $slugpro = $this->helper->getEmConfiguration('slugpro');
-        }
-        else{
-            $slugpro = FALSE;
-        }
-
         $view = $this->initializeModuleTemplate($this->request);
         $globalAdditionalTables = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['slug']['additionalTables'] ?? [];
         $table = $this->request->getArgument('table') ?? '';
@@ -320,7 +303,6 @@ class SlugController extends ActionController {
             'filterOptions' => $filterOptions,
             'sites' => (array) $this->sites,
             'languages' => $this->helper->getLanguages(),
-            'slugpro' => $slugpro,
             'request' => $this->request->getArguments(),
             'additionalTables' => $globalAdditionalTables,
             'tableData' => $tableData

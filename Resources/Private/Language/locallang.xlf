@@ -198,7 +198,7 @@
 			</trans-unit>
 
 
-			<trans-unit id="pro.feature_note">
+			<trans-unit id="feature_note">
 				<source><![CDATA[<p>This feature is in development and will be released in a future version.</p>]]></source>
 			</trans-unit>
 

@@ -192,7 +192,7 @@
 			</trans-unit>
 
 
-			<trans-unit id="pro.feature_note">
+			<trans-unit id="feature_note">
 				<target><![CDATA[<p>Dieses Feature ist in Arbeit und wird in einer zukünftigen Version veröffentlicht.</p>]]></target>
 			</trans-unit>
 

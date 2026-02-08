@@ -190,7 +190,7 @@
 			</trans-unit>
 
 
-			<trans-unit id="pro.feature_note">
+			<trans-unit id="feature_note">
 				<target><![CDATA[<p>Esta función está en desarrollo y será publicada en una versión futura.</p>]]></target>
 			</trans-unit>
 

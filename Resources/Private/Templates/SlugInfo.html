@@ -12,24 +12,10 @@
             <f:render partial="SlugInfo/GooglePreview" arguments="{_all}"/>
         </div>
         <div class="tab-pane fade" id="tab-twitter-{uid}" role="tabpanel">
-            <f:if condition="{slugpro}">
-                <f:then>
-                    <f:render partial="SlugInfo/TwitterPreview" arguments="{_all}"/>
-                </f:then>
-                <f:else>
-                    <f:render partial="ProFeatureNote" arguments="{_all}"/>
-                </f:else>
-            </f:if>
+            <f:render partial="SlugInfo/TwitterPreview" arguments="{_all}"/>
         </div>
         <div class="tab-pane fade" id="tab-facebook-{uid}" role="tabpanel">
-            <f:if condition="{slugpro}">
-                <f:then>
-                    <f:render partial="SlugInfo/FacebookPreview" arguments="{_all}"/>
-                </f:then>
-                <f:else>
-                    <f:render partial="ProFeatureNote" arguments="{_all}"/>
-                </f:else>
-            </f:if>
+            <f:render partial="SlugInfo/FacebookPreview" arguments="{_all}"/>
         </div>
     </div>
 </div>

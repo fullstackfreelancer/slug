@@ -248,26 +248,13 @@ class AjaxController extends ActionController {
         $site = $this->helper->getSiteByPageUid($queryParams['uid']);
         $languages = $this->helper->getLanguages();
         $extensionUtility= GeneralUtility::makeInstance(ExtensionManagementUtility::class);
-        if($extensionUtility::isLoaded('slugpro')){
-            $slugpro = [
-                'version' => '1.0.0'
-            ];
-        }
-        else{
-            $slugpro = FALSE;
-        }
         $view = $this->helper->createViewAndTemplatePaths('SlugInfo',$request);
         $view->assign('uid',$root['uid']);
         $view->assign('url',$this->helper->getAbsoluteUrl($root['uid']));
         $view->assign('title',$root['seo_title'] ?: $root['title']);
         $view->assign('description',$root['description'] ?: 'n/a');
-        $view->assign('slugpro',$slugpro);
         $view->assign('sitename',$site['base']);
-        $translation = [
-            'pro' => [
-                'feature_note' => $this->helper->getLangKey('pro.feature_note')
-            ]
-        ];
+        $translation = ['feature_note' => $this->helper->getLangKey('feature_note')];
         $view->assign('translate',$translation);
         //print_r($site);
         return new HtmlResponse($view->render('SlugInfo'));

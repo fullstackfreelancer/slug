@@ -65,11 +65,6 @@ function initInterface(){
             });
         }
 
-        // Find PRO Scripts and initialize functions
-        if(typeof SLUGPRO !== 'undefined'){
-            SLUGPRO.makeSlugTitlesEditable();
-        }
-
     });
 
     document.querySelectorAll('.slug-input').forEach(input => {

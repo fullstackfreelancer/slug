@@ -5,9 +5,6 @@
                 <f:translate key="LLL:EXT:slug/Resources/Private/Language/locallang.xlf:ext.title"/>
             </h1>
             <small class="text-primary"><f:translate key="LLL:EXT:slug/Resources/Private/Language/locallang.xlf:ext.version" arguments="{0:'{extEmconf.version}'}"/> ({extEmconf.state})</small>
-            <f:if condition="{slugpro}">
-                <f:render partial="SlugPro/Version"/>
-            </f:if>
         </div>
         <div class="btn-group ms-auto">
             <f:link.action action="list" controller="Slug" class="btn btn-default">

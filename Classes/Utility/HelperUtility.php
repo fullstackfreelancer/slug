@@ -17,9 +17,9 @@ class HelperUtility {
     public function createViewAndTemplatePaths($templateName,$request){
         $viewFactory = GeneralUtility::makeInstance(ViewFactoryInterface::class);
         $viewFactoryData = new ViewFactoryData(
-            templateRootPaths: ['EXT:slug/Resources/Private/Templates','EXT:slugpro/Resources/Private/Templates'],
-            partialRootPaths: ['EXT:slug/Resources/Private/Partials','EXT:slugpro/Resources/Private/Partials'],
-            layoutRootPaths: ['EXT:slug/Resources/Private/Layouts','EXT:slugpro/Resources/Private/Layouts'],
+            templateRootPaths: ['EXT:slug/Resources/Private/Templates'],
+            partialRootPaths: ['EXT:slug/Resources/Private/Partials'],
+            layoutRootPaths: ['EXT:slug/Resources/Private/Layouts'],
             request: $request,
         );
         return $viewFactory->create($viewFactoryData);

@@ -80,11 +80,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
             }
 
-            // Find PRO Scripts and initialize functions
-            if(typeof SLUGPRO !== 'undefined'){
-                SLUGPRO.makeSlugTitlesEditable();
-            }
-
         });
     }
 
