@@ -10,8 +10,7 @@ const titleField = container.dataset.titleField || 'title';
 const slugField = container.dataset.slugField || 'slug';
 const pid = container.dataset.pid || 0;
 
-SlugHelper.initFilterFields(loadHTML,recordTable,'slug_record');
-SlugHelper.loadList(recordTable,titleField,slugField,0,null,loadHTML,'slug_record',pid);
+SlugHelper.initFilterFields(loadHTML,recordTable,slugField,titleField,'slug_record');
 
 function loadHTML(responseText) {
     document.getElementById('slug-list-wrap').innerHTML = responseText;

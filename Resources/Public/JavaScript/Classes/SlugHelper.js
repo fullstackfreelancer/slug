@@ -1,12 +1,12 @@
 export class SlugHelper{
 
-    static loadList(table, titleField, slugField, page, filterFields = null, callbackFunction = null, ajaxRoute = 'slug_list', pid = null) {
+    static loadList(table, slugField, titleField, page, filterFields = null, callbackFunction = null, ajaxRoute = 'slug_list', pid = null) {
 
         console.log("table: " + table)
         console.log("ajaxRoute: " + ajaxRoute)
         console.log("filterFields: " + filterFields)
 
-        const orderby = filterFields !== null ? filterFields.orderby.value : 'crdate';
+        const orderby = filterFields !== null ? filterFields.orderby.value : 'uid';
         const order = filterFields !== null ? filterFields.order.value : 'DESC';
         const maxentries = filterFields !== null ? filterFields.maxentries.value : '20';
         const key = filterFields !== null ? filterFields.key.value : '';
@@ -57,10 +57,9 @@ export class SlugHelper{
         req.send();
     }
 
-    static initFilterFields(callbackFunction,recordTable,ajaxRoute){
+    static initFilterFields(callbackFunction,recordTable,slugField,titleField,ajaxRoute){
 
         const filterFields = {
-            'site': document.getElementById('filter_site'),
             'key': document.getElementById('filter_key'),
             'maxentries': document.getElementById('filter_maxentries'),
             'orderby': document.getElementById('filter_orderby'),
@@ -68,12 +67,8 @@ export class SlugHelper{
             'status': document.getElementById('filter_status')
         }
 
-        // filterFields.site.addEventListener('change',function(e){
-        //     this.loadList(recordTable,'title','slug',0,filterFields,callbackFunction);
-        // }.bind(this));
-
         filterFields.maxentries.addEventListener('change',function(e){
-            this.loadList(recordTable,'title','slug',0,filterFields,callbackFunction,ajaxRoute);
+            this.loadList(recordTable,slugField,titleField,0,filterFields,callbackFunction,ajaxRoute);
         }.bind(this));
 
         let searchTimeout;
@@ -88,27 +83,29 @@ export class SlugHelper{
             if (searchTerm.length >= 3) {
                 // 2. Set a 400ms delay to wait for the user to stop typing
                 searchTimeout = setTimeout(() => {
-                    this.loadList(recordTable, 'title', 'slug', 0, filterFields, callbackFunction,ajaxRoute);
+                    this.loadList(recordTable, slugField,titleField, 0, filterFields, callbackFunction,ajaxRoute);
                 }, 600);
             } 
             
             // Optional: Reload the full list if the field is cleared
             if (searchTerm.length === 0) {
-                this.loadList(recordTable, 'title', 'slug', 0, filterFields, callbackFunction,ajaxRoute);
+                this.loadList(recordTable, slugField,titleField, 0, filterFields, callbackFunction,ajaxRoute);
             }
         }.bind(this));
 
         filterFields.orderby.addEventListener('change',function(e){
-            this.loadList(recordTable,'title','slug',0,filterFields,callbackFunction,ajaxRoute);
+            this.loadList(recordTable,slugField,titleField,0,filterFields,callbackFunction,ajaxRoute);
         }.bind(this));
 
         filterFields.order.addEventListener('change',function(e){
-            this.loadList(recordTable,'title','slug',0,filterFields,callbackFunction,ajaxRoute);
+            this.loadList(recordTable,slugField,titleField,0,filterFields,callbackFunction,ajaxRoute);
         }.bind(this));
 
         filterFields.status.addEventListener('change',function(e){
-            this.loadList(recordTable,'title','slug',0,filterFields,callbackFunction,ajaxRoute);
+            this.loadList(recordTable,slugField,titleField,0,filterFields,callbackFunction,ajaxRoute);
         }.bind(this));
+
+        this.loadList(recordTable,slugField,titleField,0,filterFields,callbackFunction,ajaxRoute);
     }
 
     static preloader(){

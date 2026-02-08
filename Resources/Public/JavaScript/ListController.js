@@ -5,8 +5,7 @@ const titleField = 'title';
 const slugField = 'slug';
 const recordTable = 'pages';
 
-SlugHelper.initFilterFields(loadHTML,recordTable);
-SlugHelper.loadList(recordTable,titleField,slugField,0,null,loadHTML);
+SlugHelper.initFilterFields(loadHTML,recordTable,slugField,titleField);
 
 function loadHTML(responseText) {
     document.getElementById('slug-list-wrap').innerHTML = responseText;
