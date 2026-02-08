@@ -193,7 +193,7 @@
 
 
 			<trans-unit id="pro.feature_note">
-				<target><![CDATA[<p>Dieses Feature steht nur in Slug PRO zur Verfügung.</p><a href="https://slugpro.kohlercode.com/de" target="_blank" class="btn btn-lg btn-default">SLUG PRO JETZT KAUFEN</a>]]></target>
+				<target><![CDATA[<p>Dieses Feature ist in Arbeit und wird in einer zukünftigen Version veröffentlicht.</p>]]></target>
 			</trans-unit>
 
 
