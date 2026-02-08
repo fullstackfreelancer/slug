@@ -138,6 +138,9 @@
 				<target>Aktion</target>
 			</trans-unit>
 
+			<trans-unit id="filter.form.select.option.uid">
+				<target>UID</target>
+			</trans-unit>
             <trans-unit id="filter.form.select.option.creation_date">
 				<target>Erstellungsdatum</target>
 			</trans-unit>
