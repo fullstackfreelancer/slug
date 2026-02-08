@@ -2,7 +2,6 @@
     "name": "kohlercode/slug",
     "description": "Slug - Helps you managing the URL slugs of your TYPO3 site",
     "type": "typo3-cms-extension",
-    "version": "5.0.0",
     "license": "GPL-3.0",
     "require": {
         "php": ">=8.0.0",
