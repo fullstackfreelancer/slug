@@ -1,7 +1,7 @@
 <?php
 $EM_CONF['slug'] = [
     'title' => 'Slug',
-    'description' => 'Helps managing the URL slugs of your TYPO3 pages and custom records',
+    'description' => 'TYPO3 backend module for efficient management of URL slugs across pages and records, focused on SEO, bulk operations, and editorial productivity.',
     'category' => 'module',
     'author' => 'Simon Köhler',
     'author_email' => 'simon@kohlercode.com',
